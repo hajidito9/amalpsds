@@ -101,10 +101,16 @@ class uploadSKPegawai extends Component{
           <Container>
             <ScrollView>
             <Form>
-            <Image
-            source={{ uri: this.state.filePath.uri }}
+            { this.state.filePath.uri == undefined ?
+           <Image
+           source={require("../assets/icons8-camera-100.png")}
+           style={{ width: 100, alignSelf:'center', marginBottom:'5%', marginTop:'5%', height: 100 }}
+           /> :  
+           <Image
+            source={{ uri: this.state.filePath.uri}}
             style={{ width: 250, alignSelf:'center', marginBottom:'5%', marginTop:'5%', borderWidth:2, borderColor:'green', height: 250 }}
             />
+            } 
             <Button
               style={{borderWidth:2, borderColor:'green',width: '90%', backgroundColor: 'white', alignSelf:'center', justifyContent:'center'}}
               onPress={this.chooseFile.bind(this)}>

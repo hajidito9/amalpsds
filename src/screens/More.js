@@ -24,6 +24,7 @@ export default class More extends Component {
 
   logOut = async()=>{
     await AsyncStorage.clear();
+    this.props.navigation.navigate('AuthLoading')
   }
   render() {
     return (
