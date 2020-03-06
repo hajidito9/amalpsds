@@ -106,28 +106,6 @@ class PengajuanWarna extends Component {
             // <View>
             <Container>
                 <Content>
-                    <View style={{ flexDirection: 'row' }}>
-                        <Item style={{
-                            width: '65%',
-                            marginLeft: '5%',
-                            borderColor: 'black',
-                        }}>
-                            <Icon style={{ color: 'grey', fontSize: 20 }} name='ios-search' />
-                            <TextInput
-                                placeholder="Cari"
-                                placeholderTextColor='grey'
-                                style={{
-                                    fontSize: 16,
-                                    color: 'grey',
-                                    alignSelf: 'center'
-                                }}
-                            // value={this.state.email}
-                            // onChangeText={this.onChangeTextEmail}
-                            />
-                        </Item>
-                        <Icon2 style={{ marginLeft: '5%', marginTop: '4%', fontSize: 20 }} name="sort-amount-down"></Icon2>
-                        <Text style={{ marginLeft: '1%', marginTop: '3%', fontSize: 15 }}>Urutkan</Text>
-                    </View>
                     <List style={{ marginTop: '5%', marginBottom: '5%' }}>
                         {this.props.kendaraanProp.dataWarna.map((item, i) =>
                             <ListItem >

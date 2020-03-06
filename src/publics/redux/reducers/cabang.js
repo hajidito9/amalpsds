@@ -31,6 +31,29 @@ export default cabang = (state = initialState, action) => {
                 isError: true
             }
 
+        case 'CARI_CABANG_PENDING':
+            return {
+                ...state,
+                isLoading: true
+            }
+
+        case 'CARI_CABANG_FULFILLED':
+            // console.warn(action.payload.data)
+            // console.log("data merk: "+action.payload.data)
+            return {
+                ...state,
+                isLoading: false,
+                isFinish: true,
+                dataCabang: action.payload.data.values
+            }
+
+        case 'CARI_CABANG_REJECTED':
+            return {
+                ...state,
+                isLoading: false,
+                isError: true
+            }
+
         default:
             return state;
     }

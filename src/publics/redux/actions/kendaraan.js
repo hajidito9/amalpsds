@@ -8,10 +8,24 @@ export const getMerk = (kategori) => {
     }
 }
 
+export const cariMerk = (kategori,cari) => {
+    return {
+        type: 'CARI_MERK',
+        payload : axios.get(linkApi.ip+'kendaraan/merk/cari/'+kategori+'/'+cari)
+    }
+}
+
 export const getList = (merkId,status) => {
     return {
         type: 'GET_LIST',
         payload : axios.get(linkApi.ip+'kendaraan/list/'+merkId+'/'+status)
+    }
+}
+
+export const cariTipe = (merkId,status,cari) => {
+    return {
+        type: 'CARI_TIPE',
+        payload : axios.get(linkApi.ip+'kendaraan/list/cari/'+merkId+'/'+status+'/'+cari)
     }
 }
 

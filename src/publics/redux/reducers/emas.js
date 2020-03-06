@@ -1,5 +1,6 @@
 const initialState = {
     dataEmas: [],
+    dataKonversi: [],
     isLoading: false,
     isFinish: false,
     isError: false,
@@ -24,6 +25,28 @@ export default emas = (state = initialState, action) => {
             }
 
         case 'GET_EMAS_REJECTED':
+            return {
+                ...state,
+                isLoading: false,
+                isError: true
+            }
+
+        case 'KONVERSI_EMAS_PENDING':
+            return {
+                ...state,
+                isLoading: true
+            }
+
+        case 'KONVERSI_EMAS_FULFILLED':
+            // console.warn("data konversi: "+JSON.stringify(action.payload.data))
+            return {
+                ...state,
+                isLoading: false,
+                isFinish: true,
+                dataKonversi: action.payload.data.values
+            }
+
+        case 'KONVERSI_EMAS_REJECTED':
             return {
                 ...state,
                 isLoading: false,

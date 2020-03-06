@@ -13,7 +13,7 @@ import { Left, Icon, List, ListItem, Container, Content, Item } from 'native-bas
 import MapView, { Callout } from 'react-native-maps';
 import Polyline from '@mapbox/polyline';
 import { connect } from 'react-redux';
-import { getCabang } from '../publics/redux/actions/cabang';
+import { getCabang, cariCabang } from '../publics/redux/actions/cabang';
 import AsyncStorage from '@react-native-community/async-storage';
 
 class pengajuanCabang extends Component {
@@ -39,7 +39,8 @@ class pengajuanCabang extends Component {
       cordLatitude: -6.23,
       cordLongitude: 106.75,
       idCabang: '',
-      namaCabang: 'Pegadaian UPC Patra'
+      namaCabang: 'Pegadaian UPC Patra',
+      cari: ''
     };
 
     this.mergeLot = this.mergeLot.bind(this);
@@ -106,14 +107,21 @@ class pengajuanCabang extends Component {
     await this.setState({ longitudeCabang: longitude })
     await this.setState({ idCabang: idCabang })
     await this.setState({ namaCabang: namaCabang })
-    await this.setState({ region: {
-      latitude: latitude,
-      longitude: longitude,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    } })
+    await this.setState({
+      region: {
+        latitude: latitude,
+        longitude: longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      }
+    })
   }
 
+  ubahCari = cari => this.setState({ cari });
+
+  cari = async (cari) => {
+    await this.props.dispatch(cariCabang(cari))
+  }
   componentWillMount = async () => {
     this.getDataCabang()
     // console.warn(this.props.cabangProp.dataCabang)
@@ -244,17 +252,20 @@ class pengajuanCabang extends Component {
               marginLeft: '5%',
               borderColor: 'black',
             }}>
-              <Icon style={{ color: 'grey', fontSize: 20 }} name='ios-search' />
+              <TouchableOpacity onPress={()=> this.cari(this.state.cari)}>
+                <Icon style={{ color: 'grey', fontSize: 20 }} name='ios-search' />
+              </TouchableOpacity>
               <TextInput
                 placeholder="Cari"
                 placeholderTextColor='grey'
                 style={{
                   fontSize: 16,
+                  width:'90%',
                   color: 'grey',
                   alignSelf: 'center'
                 }}
-              // value={this.state.email}
-              // onChangeText={this.onChangeTextEmail}
+                value={this.state.cari}
+                onChangeText={this.ubahCari}
               />
             </Item>
           </View>

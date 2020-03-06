@@ -7,7 +7,7 @@ import SegmentedControlTab from "react-native-segmented-control-tab";
 import Slider from "react-native-slider";
 import AsyncStorage from '@react-native-community/async-storage';
 import { connect } from 'react-redux';
-import { getEmas } from '../publics/redux/actions/emas';
+import { getEmas, getKonversiEmas } from '../publics/redux/actions/emas';
 import NumericInput from 'react-native-numeric-input'
 import NumberFormat from 'react-number-format';
 
@@ -57,6 +57,8 @@ class PengajuanUangMuka extends Component {
             beratKotor: 0,
             jenis: '',
             taksiran: 0,
+            konversiGram:0,
+            konversiKarat:0
             // diskon:0
         };
     }
@@ -85,7 +87,7 @@ class PengajuanUangMuka extends Component {
                     <View style={{ marginLeft: '15%', flexDirection: 'column' }}>
                         <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: 'green', fontWeight: 'bold' }}>{this.props.tabEmasProp.dataEmas.map((item, i) => item.no_rek)}</Text>
                         <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: 'green', fontWeight: 'bold' }}>{this.props.tabEmasProp.dataEmas.map((item, i) => item.saldo)} gram</Text>
-                        <NumberFormat value={this.state.gram * 724000} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: '#2ECC71', fontWeight: 'bold' }}>{value}</Text>}/>
+                        <NumberFormat value={this.state.gram * this.state.konversiGram} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: '#2ECC71', fontWeight: 'bold' }}>{value}</Text>}/>
                     </View>
                 </View>
                 // <Text>emas</Text>
@@ -128,16 +130,16 @@ class PengajuanUangMuka extends Component {
                         </Item>
                         <Item stackedLabel>
                             <Label>Berat Kotor (gram)</Label>
-                            <NumericInput minValue={1} type='up-down' onChange={beratKotor => this.setState({ beratKotor })} placeholder="0" placeholderTextColor="grey" borderColor ='white' />
+                            <NumericInput minValue={1.0} step={0.1} valueType={'real'} type='up-down' onChange={beratKotor => this.setState({ beratKotor })} placeholder="0" placeholderTextColor="grey" borderColor ='white' />
                         </Item>
                         <Item stackedLabel>
                             <Label>Berat Bersih (gram)</Label>
-                            <NumericInput minValue={1} type='up-down' onChange={beratBersih => this.setState({ beratBersih })} placeholder="0" placeholderTextColor="grey" borderColor ='white' />
+                            <NumericInput minValue={1.0} step={0.1} valueType={'real'} type='up-down' onChange={beratBersih => this.setState({ beratBersih })} placeholder="0" placeholderTextColor="grey" borderColor ='white' />
                         </Item>
                         <Item stackedLabel>
-                            <Label>Perkiraan Taksiran</Label>
+                            <Label>Perkiraan Taksiran (Plafon 90%)</Label>
                             {/* <Text style={{ color: "#2ECC71" }}>Rp {this.state.kadar * 89486 * this.state.beratBersih} </Text> */}
-                            <NumberFormat value={this.state.kadar * 89486 * this.state.beratBersih} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{fontWeight:'bold', color: "#2ECC71" }}>{value}</Text>}/>
+                            <NumberFormat value={((this.state.kadar * this.state.konversiKarat * this.state.beratBersih) * 0.9).toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{fontWeight:'bold', color: "#2ECC71" }}>{value}</Text>}/>
                         </Item>
                     </Form>
                 </View>
@@ -162,7 +164,7 @@ class PengajuanUangMuka extends Component {
                 </Button>
             )
         }
-        else if (this.state.selectedIndex === 2 && (this.state.kadar * 89486 * this.state.beratBersih < (this.state.harga * this.state.persenDp).toFixed(0))) {
+        else if (this.state.selectedIndex === 2 && (this.state.kadar * this.state.konversiKarat * this.state.beratBersih < (this.state.harga * this.state.persenDp).toFixed(0))) {
             return (
                 <Button
                     disabled
@@ -191,7 +193,11 @@ class PengajuanUangMuka extends Component {
 
     componentDidMount = async () => {
         await this.getData();
-        this.props.tabEmasProp.dataEmas.map((item, i) => this.setState({ saldo: item.saldo * 724000 }))
+        await this.props.dispatch(getKonversiEmas('gram'))
+        this.props.tabEmasProp.dataKonversi.map((item, i) => this.setState({ konversiGram: item.jual }))
+        await this.props.dispatch(getKonversiEmas('karat'))
+        this.props.tabEmasProp.dataKonversi.map((item, i) => this.setState({ konversiKarat: (item.jual / 24).toFixed(0) }))
+        this.props.tabEmasProp.dataEmas.map((item, i) => this.setState({ saldo: item.saldo * this.state.konversiGram }))
         this.props.tabEmasProp.dataEmas.map((item, i) => this.setState({ gram: item.saldo}))
         let asMinDp = parseFloat(await AsyncStorage.getItem("persenDp"))
         let asHarga = Number(await AsyncStorage.getItem("hargaKendaraan"))
@@ -218,7 +224,7 @@ class PengajuanUangMuka extends Component {
             await AsyncStorage.setItem("jenisDp","cash")
             await AsyncStorage.setItem("persenDpPengajuan",JSON.stringify(this.state.persenDp))
             await AsyncStorage.setItem("uangDp",JSON.stringify((this.state.harga * this.state.persenDp).toFixed(0)))
-            await AsyncStorage.setItem("angsuran",JSON.stringify(((((this.state.harga - (this.state.harga * this.state.persenDp)) / this.state.tenor) + ((this.state.harga - (this.state.harga * this.state.persenDp)) * 0.009)).toFixed(0) * (1-(((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100))).toFixed(0)))
+            await AsyncStorage.setItem("angsuran",JSON.stringify((((this.state.harga - (this.state.harga * this.state.persenDp)) / this.state.tenor) + ((this.state.harga - (this.state.harga * this.state.persenDp)) * 0.009)* (1-(((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100))).toFixed(0)))
             await AsyncStorage.setItem("diskonAngsuran",JSON.stringify(((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100))
             await AsyncStorage.setItem("marhunBih",JSON.stringify((this.state.harga - (this.state.harga * this.state.persenDp)).toFixed(0)))
             this.props.navigation.navigate('PengajuanNasabah')
@@ -229,7 +235,8 @@ class PengajuanUangMuka extends Component {
             await AsyncStorage.setItem("uangDp",JSON.stringify((this.state.harga * this.state.persenDp).toFixed(0)))
             await AsyncStorage.setItem("gramDp",JSON.stringify(this.state.gram))
             await AsyncStorage.setItem("hargaEmasDp",JSON.stringify(this.state.saldo))
-            await AsyncStorage.setItem("angsuran",JSON.stringify((((this.state.harga) / this.state.tenor) + ((this.state.harga) * 0.009)).toFixed(0)))
+            await AsyncStorage.setItem("angsuran",JSON.stringify((((this.state.harga - (this.state.harga * this.state.persenDp)) / this.state.tenor) + ((this.state.harga - (this.state.harga * this.state.persenDp)) * 0.009)* (1-(((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100))).toFixed(0)))
+            await AsyncStorage.setItem("diskonAngsuran",JSON.stringify(((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100))
             await AsyncStorage.setItem("marhunBih",JSON.stringify(this.state.harga - (this.state.harga * this.state.persenDp)))
             this.props.navigation.navigate('PengajuanNasabah')
         }
@@ -241,7 +248,7 @@ class PengajuanUangMuka extends Component {
             await AsyncStorage.setItem("kadarPerhiasanDp",JSON.stringify(this.state.kadar))
             await AsyncStorage.setItem("brtKotorPerhiasanDp",JSON.stringify(this.state.beratKotor))
             await AsyncStorage.setItem("brtBersihPerhiasanDp",JSON.stringify(this.state.beratBersih))
-            await AsyncStorage.setItem("taksiranPerhiasanDp",JSON.stringify(this.state.kadar * 89486 * this.state.beratBersih))
+            await AsyncStorage.setItem("taksiranPerhiasanDp",JSON.stringify(this.state.kadar * this.state.konversiKarat * this.state.beratBersih))
             await AsyncStorage.setItem("angsuran",JSON.stringify((((this.state.harga) / this.state.tenor) + ((this.state.harga) * 0.009)).toFixed(0)))
             await AsyncStorage.setItem("marhunBih",JSON.stringify(this.state.harga - (this.state.harga * this.state.persenDp)))
             this.props.navigation.navigate('PengajuanNasabah')
@@ -273,21 +280,21 @@ class PengajuanUangMuka extends Component {
                                     <View style={{ flexDirection: 'row', marginLeft:'5%' }}>
                                         <View style={{ flexDirection: 'column' }}>
                                             <Text style={{ alignSelf: 'flex-start', fontSize: 13, color: 'black' }}>Asal Negara Kendaraan</Text>
-                                            <Text style={{ alignSelf: 'flex-start', fontSize: 13, color: 'black' }}>Minimal Persen DP</Text>
-                                            <Text style={{ alignSelf: 'flex-start', fontSize: 13, color: 'black' }}>Persen DP yang Diajukan</Text>
+                                            <Text style={{ alignSelf: 'flex-start', fontSize: 13, color: 'black' }}>Minimal Persen Uang Muka</Text>
+                                            <Text style={{ alignSelf: 'flex-start', fontSize: 13, color: 'black' }}>Persen Uang Muka yang Diajukan</Text>
                                             <Text style={{ alignSelf: 'flex-start', fontSize: 13, color: 'black' }}>Harga Kendaraan</Text>
                                             <Text style={{ alignSelf: 'flex-start', fontSize: 13, color: 'black' }}>Tenor</Text>
                                             <Text style={{ alignSelf: 'flex-start', fontSize: 13, color: 'grey' }}>Uang muka untuk pembayaran</Text>
-                                            {this.state.selectedIndex === 0 ? <Text style={{ alignSelf: 'flex-start', fontSize: 13, color: 'grey' }}>Diskon pemeliharaan</Text> : <Text></Text>}
+                                            {this.state.selectedIndex === 0 || this.state.selectedIndex === 1 ? <Text style={{ alignSelf: 'flex-start', fontSize: 13, color: 'grey' }}>Diskon mu'nah pemeliharaan</Text> : <Text></Text>}
                                         </View>
-                                        <View style={{ marginLeft: '15%', flexDirection: 'column' }}>
+                                        <View style={{ marginLeft: '10%', flexDirection: 'column' }}>
                                             <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: 'green', fontWeight: 'bold' }}>{this.state.negara}</Text>
                                             <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: 'green', fontWeight: 'bold' }}>{(this.state.minDp * 100).toFixed(0)}%</Text>
                                             <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: '#2ECC71', fontWeight: 'bold' }}>{(this.state.persenDp * 100).toFixed(0)}%</Text>
                                             <NumberFormat value={this.state.harga} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: 'green', fontWeight: 'bold' }}>{value}</Text>}/>
                                             <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: 'green', fontWeight: 'bold' }}>{this.state.tenor} Bulan</Text>
                                             <NumberFormat value={(this.state.harga * this.state.persenDp).toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ alignSelf: 'flex-end', fontSize: 13, fontWeight: 'bold', color: '#2ECC71' }}>{value}</Text>}/>
-                                            {this.state.selectedIndex === 0 ? <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: '#2ECC71', fontWeight: 'bold' }}>{((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) > 0 ? ((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) : 0 }%</Text> : <Text></Text>}
+                                            {this.state.selectedIndex === 0 || this.state.selectedIndex === 1 ? <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: '#2ECC71', fontWeight: 'bold' }}>{((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) > 0 ? ((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) : 0 }%</Text> : <Text></Text>}
                                         </View>
                                     </View>
                                 </View>
@@ -306,10 +313,11 @@ class PengajuanUangMuka extends Component {
                                 <Text style={{ fontSize: 13 }}>Angsuran per Bulan </Text>
                                 {/* <Text style={{ fontSize: 20, color: 'green' }}> */}
                                     {
-                                    this.state.selectedIndex === 1 || this.state.selectedIndex === 2 ?
+                                    // this.state.selectedIndex === 1 || this.state.selectedIndex === 2 ?
+                                    this.state.selectedIndex === 2 ?
                                     <NumberFormat value={(((this.state.harga) / this.state.tenor) + ((this.state.harga) * 0.009)).toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ fontSize: 20, color: 'green' }}>{value}</Text>}/>
                                          :
-                                        <NumberFormat value={((((this.state.harga - (this.state.harga * this.state.persenDp)) / this.state.tenor) + ((this.state.harga - (this.state.harga * this.state.persenDp)) * 0.009)).toFixed(0) * (1-(((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100))).toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ fontSize: 20, color: 'green' }}>{value}</Text>} />
+                                        <NumberFormat value={(((this.state.harga - (this.state.harga * this.state.persenDp)) / this.state.tenor) + ((this.state.harga - (this.state.harga * this.state.persenDp)) * 0.009)* (1-(((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100))).toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ fontSize: 20, color: 'green' }}>{value}</Text>} />
                                         
                                 }
                                 {/* </Text> */}

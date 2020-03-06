@@ -7,3 +7,10 @@ export const getEmas = (userid) => {
         payload : axios.get(linkApi.ip+'emas/user/'+userid)
     }
 }
+
+export const getKonversiEmas = (satuan) => {
+    return {
+        type: 'KONVERSI_EMAS',
+        payload : axios.get(linkApi.ip+'emas/konversi/'+satuan)
+    }
+}

@@ -18,7 +18,7 @@ import {
 
 import Icon2 from 'react-native-vector-icons/dist/FontAwesome5';
 import { connect } from 'react-redux';
-import { getMerk } from '../publics/redux/actions/kendaraan';
+import { getMerk, cariMerk } from '../publics/redux/actions/kendaraan';
 import AsyncStorage from '@react-native-community/async-storage';
 
 class PengajuanMerk extends Component {
@@ -30,7 +30,9 @@ class PengajuanMerk extends Component {
             selected1: undefined,
             selected2: undefined,
             selected3: undefined,
-            value: 0.1
+            value: 0.1,
+            cari:'',
+            kategoriKendaraan:''
         };
     }
 
@@ -73,8 +75,9 @@ class PengajuanMerk extends Component {
     })
 
     getData = async () => {
-        let kategoriKendaraan = await AsyncStorage.getItem('kategoriKendaraan')
-        await this.props.dispatch(getMerk(kategoriKendaraan))
+        let asKategoriKendaraan = await AsyncStorage.getItem('kategoriKendaraan')
+        await this.setState({kategoriKendaraan : asKategoriKendaraan})
+        await this.props.dispatch(getMerk(this.state.kategoriKendaraan))
     }
 
     componentDidMount = async () => {
@@ -93,6 +96,11 @@ class PengajuanMerk extends Component {
     //         sub.remove()
     //     })
     // }
+    ubahCari = cari => this.setState({ cari });
+
+    cari = async (kategoriKendaraan, cari) => {
+        await this.props.dispatch(cariMerk(kategoriKendaraan, cari))
+    }
 
     render() {
         // let category = navigation.getParam('category', 'category');
@@ -102,33 +110,35 @@ class PengajuanMerk extends Component {
                 <Content>
                     <View style={{ flexDirection: 'row' }}>
                         <Item style={{
-                            width: '65%',
+                            width: '90%',
                             marginLeft: '5%',
                             borderColor: 'black',
                         }}>
-                            <Icon style={{ color: 'grey', fontSize: 20 }} name='ios-search' />
+                            <TouchableOpacity onPress={() => this.cari(this.state.kategoriKendaraan, this.state.cari)}>
+                                <Icon style={{ color: 'grey', fontSize: 20 }} name='ios-search' />
+                            </TouchableOpacity>
                             <TextInput
                                 placeholder="Cari"
                                 placeholderTextColor='grey'
                                 style={{
                                     fontSize: 16,
+                                    width: '90%',
                                     color: 'grey',
                                     alignSelf: 'center'
                                 }}
-                            // value={this.state.email}
-                            // onChangeText={this.onChangeTextEmail}
+                                value={this.state.cari}
+                                onChangeText={this.ubahCari}
                             />
                         </Item>
-                        <Icon2 style={{ marginLeft: '5%', marginTop: '4%', fontSize: 20 }} name="sort-amount-down"></Icon2>
-                        <Text style={{ marginLeft: '1%', marginTop: '3%', fontSize: 15 }}>Urutkan</Text>
                     </View>
+
                     <List style={{ marginTop: '5%', marginBottom: '5%' }}>
                         {this.props.kendaraanProp.dataMerk.map((item, i) =>
                             <ListItem >
-                                <TouchableOpacity onPress={() => item.nama !='' ? AsyncStorage.setItem("merkKendaraan",item.nama).then(this.props.navigation.navigate('PengajuanStatusKendaraan', 
-                                {
-                                    merkId: item.merk_id,
-                                })) : ''}>
+                                <TouchableOpacity onPress={() => item.nama != '' ? AsyncStorage.setItem("merkKendaraan", item.nama).then(this.props.navigation.navigate('PengajuanStatusKendaraan',
+                                    {
+                                        merkId: item.merk_id,
+                                    })) : ''}>
                                     <Left style={{ flexDirection: 'column' }}>
                                         <Text style={{ alignSelf: 'flex-start' }}>{item.nama}</Text>
                                     </Left>
