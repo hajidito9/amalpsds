@@ -19,6 +19,7 @@ import uploadDepanMikro from '../screens/uploadDepanMikro';
 import uploadDalamMikro from '../screens/uploadDalamMikro';
 import PengajuanMerkKendaraan from '../screens/PengajuanMerkKendaraan';
 import PengajuanStatusKendaraan from '../screens/PengajuanStatusKendaraan';
+import PengajuanStatus from '../screens/PengajuanStatus';
 import PengajuanListKendaraan from '../screens/PengajuanListKendaraan';
 import PengajuanWarnaKendaraan from '../screens/PengajuanWarnaKendaraan';
 import PengajuanDetailKendaraan from '../screens/PengajuanDetailKendaraan';
@@ -107,6 +108,9 @@ const PengajuanStack = createStackNavigator({
   },
   PengajuanStatusKendaraan: {
     screen: PengajuanStatusKendaraan
+  },
+  PengajuanStatus: {
+    screen: PengajuanStatus
   },
   PengajuanListKendaraan: {
     screen: PengajuanListKendaraan

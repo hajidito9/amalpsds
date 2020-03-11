@@ -233,7 +233,8 @@ class PengajuanKonfirmasi extends Component {
 
         let statusAngsuran = "Belum Bayar"
         await this.props.dispatch(addAngsuran(pengajuan_id, statusAngsuran, angsuran, asTenor))
-        alert('pengajuan tersimpan')
+        alert('pengajuan tersimpan') 
+           this.props.navigation.navigate('PengajuanStatus')
     }
 
     render() {

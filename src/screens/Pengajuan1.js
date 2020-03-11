@@ -17,6 +17,8 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 
 import Slider from "react-native-slider";
+import { getPengajuan } from '../publics/redux/actions/pengajuan';
+import { connect } from 'react-redux';
 
 class Pengajuan1 extends Component {
 
@@ -31,34 +33,42 @@ class Pengajuan1 extends Component {
       tipeKendaraan: '',
       statusKendaraan: '',
       warnaKendaraan: '',
-      namaCabang:''
+      namaCabang: ''
     };
   }
 
   componentDidMount = async () => {
-    this.subs = [
-      this.props.navigation.addListener('willFocus', async () => {
-        let asKategori = await AsyncStorage.getItem('kategoriKendaraan')
-        // console.warn(asKategori)
-        let asIdKendaraan = await AsyncStorage.getItem('idKendaraan')
-        let asMerkKendaraan = await AsyncStorage.getItem('merkKendaraan')
-        let asTipeKendaraan = await AsyncStorage.getItem('tipeKendaraan')
-        let asStatusKendaraan = await AsyncStorage.getItem('statusKendaraan')
-        let asWarnaKendaraan = await AsyncStorage.getItem('warnaKendaraan')
-        let asTenor = await AsyncStorage.getItem('tenor')
-        let asIdCabang = await AsyncStorage.getItem('idCabang')
-        let asNamaCabang = await AsyncStorage.getItem('namaCabang')
-        this.setState({ kategoriKendaraan: asKategori ? asKategori : '' })
-        this.setState({ idKendaraan: asIdKendaraan ? asIdKendaraan : '' })
-        this.setState({ tenor: asTenor ? asTenor : 0 })
-        this.setState({ idCabang: asIdCabang ? asIdCabang : '' })
-        this.setState({ merkKendaraan: asMerkKendaraan ? asMerkKendaraan : '' })
-        this.setState({ tipeKendaraan: asTipeKendaraan ? asTipeKendaraan : '' })
-        this.setState({ statusKendaraan: asStatusKendaraan ? asStatusKendaraan : '' })
-        this.setState({ warnaKendaraan: asWarnaKendaraan ? asWarnaKendaraan : '' })
-        this.setState({ namaCabang: asNamaCabang ? asNamaCabang : '' })
-      }),
-    ]
+    let user_id = await AsyncStorage.getItem("userId")
+    await this.props.dispatch(getPengajuan(user_id))
+    let adaPengajuan = await this.props.pengajuanProp.dataPengajuanNasabah.length
+    if (adaPengajuan > 0) {
+      this.props.navigation.navigate('PengajuanStatus')
+    }
+    else {
+      this.subs = [
+        this.props.navigation.addListener('willFocus', async () => {
+          let asKategori = await AsyncStorage.getItem('kategoriKendaraan')
+          // console.warn(asKategori)
+          let asIdKendaraan = await AsyncStorage.getItem('idKendaraan')
+          let asMerkKendaraan = await AsyncStorage.getItem('merkKendaraan')
+          let asTipeKendaraan = await AsyncStorage.getItem('tipeKendaraan')
+          let asStatusKendaraan = await AsyncStorage.getItem('statusKendaraan')
+          let asWarnaKendaraan = await AsyncStorage.getItem('warnaKendaraan')
+          let asTenor = await AsyncStorage.getItem('tenor')
+          let asIdCabang = await AsyncStorage.getItem('idCabang')
+          let asNamaCabang = await AsyncStorage.getItem('namaCabang')
+          this.setState({ kategoriKendaraan: asKategori ? asKategori : '' })
+          this.setState({ idKendaraan: asIdKendaraan ? asIdKendaraan : '' })
+          this.setState({ tenor: asTenor ? asTenor : 0 })
+          this.setState({ idCabang: asIdCabang ? asIdCabang : '' })
+          this.setState({ merkKendaraan: asMerkKendaraan ? asMerkKendaraan : '' })
+          this.setState({ tipeKendaraan: asTipeKendaraan ? asTipeKendaraan : '' })
+          this.setState({ statusKendaraan: asStatusKendaraan ? asStatusKendaraan : '' })
+          this.setState({ warnaKendaraan: asWarnaKendaraan ? asWarnaKendaraan : '' })
+          this.setState({ namaCabang: asNamaCabang ? asNamaCabang : '' })
+        }),
+      ]
+    }
   }
 
   // shouldComponentUpdate= async () => {
@@ -140,7 +150,7 @@ class Pengajuan1 extends Component {
           <List style={{ marginTop: '5%', marginBottom: '3%' }}>
             <ListItem >
               <Left style={{ flexDirection: 'column' }}>
-                <Text style={{ color: 'green',fontWeight:'bold',alignSelf: 'flex-start' }}>Kategori Kendaraan</Text>
+                <Text style={{ color: 'green', fontWeight: 'bold', alignSelf: 'flex-start' }}>Kategori Kendaraan</Text>
                 <Text style={{ color: 'grey', fontSize: 12, alignSelf: 'flex-start' }}> {this.state.kategoriKendaraan == '' ? 'Pilihan Jenis Kendaraan' : this.state.kategoriKendaraan}</Text>
               </Left>
               <TouchableOpacity onPress={() => this.props.navigation.navigate('PengajuanKategoriKendaraan')}>
@@ -151,8 +161,8 @@ class Pengajuan1 extends Component {
             </ListItem>
             <ListItem>
               <Left style={{ flexDirection: 'column' }}>
-                <Text style={{ color: 'green',fontWeight:'bold',alignSelf: 'flex-start' }}>Pilih Kendaraan</Text>
-                <Text style={{ color: 'grey', fontSize: 12, alignSelf: 'flex-start' }}>{this.state.idKendaraan == '' ? 'Pilihan Merk dan Nama Kendaraan Bermotor' : this.state.merkKendaraan+' '+this.state.tipeKendaraan+' '+this.state.statusKendaraan+' Warna '+this.state.warnaKendaraan}</Text>
+                <Text style={{ color: 'green', fontWeight: 'bold', alignSelf: 'flex-start' }}>Pilih Kendaraan</Text>
+                <Text style={{ color: 'grey', fontSize: 12, alignSelf: 'flex-start' }}>{this.state.idKendaraan == '' ? 'Pilihan Merk dan Nama Kendaraan Bermotor' : this.state.merkKendaraan + ' ' + this.state.tipeKendaraan + ' ' + this.state.statusKendaraan + ' Warna ' + this.state.warnaKendaraan}</Text>
               </Left>
               <TouchableOpacity onPress={() => this.state.kategoriKendaraan == '' ? alert('Pilih Kategori Kendaraan Terlebih dahulu') : this.props.navigation.navigate('PengajuanMerkKendaraan')}>
                 <Right>
@@ -162,8 +172,8 @@ class Pengajuan1 extends Component {
             </ListItem>
             <ListItem>
               <Left style={{ flexDirection: 'column' }}>
-                <Text style={{ color: 'green',fontWeight:'bold',alignSelf: 'flex-start' }}>Tenor</Text>
-                <Text style={{ color: 'grey', fontSize: 12, alignSelf: 'flex-start' }}>{this.state.tenor == 0 ? 'Jangka Waktu Peminjaman' : this.state.tenor+" Bulan"}</Text>
+                <Text style={{ color: 'green', fontWeight: 'bold', alignSelf: 'flex-start' }}>Tenor</Text>
+                <Text style={{ color: 'grey', fontSize: 12, alignSelf: 'flex-start' }}>{this.state.tenor == 0 ? 'Jangka Waktu Peminjaman' : this.state.tenor + " Bulan"}</Text>
               </Left>
               <TouchableOpacity onPress={() => this.state.idKendaraan == '' ? alert('Pilih Merk dan Nama Kendaraan Terlebih dahulu') : this.props.navigation.navigate('PengajuanTenor')}>
                 <Right>
@@ -173,7 +183,7 @@ class Pengajuan1 extends Component {
             </ListItem>
             <ListItem>
               <Left style={{ flexDirection: 'column' }}>
-                <Text style={{ color: 'green', fontWeight:'bold',alignSelf: 'flex-start' }}>Cabang Pegadaian</Text>
+                <Text style={{ color: 'green', fontWeight: 'bold', alignSelf: 'flex-start' }}>Cabang Pegadaian</Text>
                 <Text style={{ color: 'grey', fontSize: 12, alignSelf: 'flex-start' }}>{this.state.idCabang == '' ? 'Pilihan Cabang Untuk Melaksanakan Akad' : this.state.namaCabang}</Text>
               </Left>
               <TouchableOpacity onPress={() => this.state.tenor == 0 ? alert('Pilih Tenor Terlebih Dahulu') : this.props.navigation.navigate('PengajuanCabang')}>
@@ -202,4 +212,11 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Pengajuan1;
+
+const mapStateToProps = (state) => {
+  return {
+    pengajuanProp: state.pengajuan,
+  }
+}
+
+export default connect(mapStateToProps)(Pengajuan1);

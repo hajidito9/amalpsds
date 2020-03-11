@@ -65,32 +65,24 @@ export default class Journey extends Component {
                 <Text style={{ fontSize: 20, color: 'white' }}>Keep Moving!</Text>
               </View>
             </CardItem>
-            <CardItem >
-              <Left>
-                <View style={{ flexDirection: 'column' }}>
+            <View style={{flexDirection:'row', padding:10}}>
+               <View style={{ flexDirection: 'column', alignItems:'center' }}>
                   <Text style={{ color: 'green' }}>3</Text>
                   <Text style={{ color: 'grey' }}>Bulan</Text>
                 </View>
-              </Left>
-              <Left>
-                <View style={{ flexDirection: 'column' }}>
-                  <Text style={{ color: 'green', fontSize: 12 }}>Rp 4,500,000</Text>
-                  <Text style={{ color: 'grey', fontSize: 15 }}>Terbayar</Text>
+                <View style={{ flexDirection: 'column', alignItems:'center' }}>
+                  <Text style={{ color: 'green' }}>Rp 40,500,000</Text>
+                  <Text style={{ color: 'grey' }}>Terbayar</Text>
                 </View>
-              </Left>
-              <Left>
-                <View style={{ flexDirection: 'column' }}>
+                <View style={{ flexDirection: 'column', marginLeft:'2%', alignItems:'center' }}>
                   <Text style={{ color: 'red' }}>9</Text>
-                  <Text style={{ color: 'grey', fontSize: 13 }}>Sisa Bulan</Text>
+                  <Text style={{ color: 'grey'}}>Sisa Bulan</Text>
                 </View>
-              </Left>
-              <Left>
-                <View style={{ flexDirection: 'column' }}>
-                  <Text style={{ color: 'red', fontSize: 10 }}>Rp 18,500,000</Text>
-                  <Text style={{ color: 'grey', fontSize: 12 }}>Sisa Bayar</Text>
+                <View style={{ flexDirection: 'column', alignItems:'center' }}>
+                  <Text style={{ color: 'red'}}>Rp 80,500,000</Text>
+                  <Text style={{ color: 'grey' }}>Sisa Bayar</Text>
                 </View>
-              </Left>
-            </CardItem>
+                </View>
           </Card>
           <View style={{ alignSelf: 'center' }}>
             <View style={{ marginTop: '10%', alignItems: 'center' }}>
