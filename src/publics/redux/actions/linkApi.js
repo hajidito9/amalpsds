@@ -14,6 +14,8 @@ const address = {
     // ip : 'http://192.168.100.206:3000/'
     // ip : 'http://10.30.20.26:3000/'
     // ip : 'http://182.28.96.143:3000/'
+    // ip : 'http://192.168.100.206:3000/'
+    // ip : 'https://sleepy-garden-24110.herokuapp.com/'
 }
 
 export default address

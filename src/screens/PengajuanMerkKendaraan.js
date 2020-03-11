@@ -135,10 +135,10 @@ class PengajuanMerk extends Component {
                     <List style={{ marginTop: '5%', marginBottom: '5%' }}>
                         {this.props.kendaraanProp.dataMerk.map((item, i) =>
                             <ListItem >
-                                <TouchableOpacity onPress={() => item.nama != '' ? AsyncStorage.setItem("merkKendaraan", item.nama).then(this.props.navigation.navigate('PengajuanStatusKendaraan',
+                                <TouchableOpacity onPress={() => item.nama != '' ? AsyncStorage.setItem("idMerk", item.merk_id).then(AsyncStorage.setItem("merkKendaraan", item.nama).then(this.props.navigation.navigate('PengajuanStatusKendaraan',
                                     {
                                         merkId: item.merk_id,
-                                    })) : ''}>
+                                    }))) : ''}>
                                     <Left style={{ flexDirection: 'column' }}>
                                         <Text style={{ alignSelf: 'flex-start' }}>{item.nama}</Text>
                                     </Left>

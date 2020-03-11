@@ -1,5 +1,6 @@
 const initialState = {
     dataEmas: [],
+    dataDpEmas: [],
     dataKonversi: [],
     isLoading: false,
     isFinish: false,
@@ -47,6 +48,28 @@ export default emas = (state = initialState, action) => {
             }
 
         case 'KONVERSI_EMAS_REJECTED':
+            return {
+                ...state,
+                isLoading: false,
+                isError: true
+            }
+
+        case 'POST_DPEMAS_PENDING':
+            return {
+                ...state,
+                isLoading: true
+            }
+
+        case 'POST_DPEMAS_FULFILLED':
+            // console.warn("data konversi: "+JSON.stringify(action.payload.data))
+            return {
+                ...state,
+                isLoading: false,
+                isFinish: true,
+                dataDpEmas: action.payload.data.values
+            }
+
+        case 'POST_DPEMAS_REJECTED':
             return {
                 ...state,
                 isLoading: false,

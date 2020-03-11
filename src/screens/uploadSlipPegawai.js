@@ -19,7 +19,7 @@ class uploadSlipPegawai extends Component{
         await this.props.dispatch(uploadDokumen(this.state.filePath));
         await AsyncStorage.setItem("linkSlipPegawai",this.props.uploadProp.dataUpload)
         // if  (this.props.uploadProp.isLoading){
-          alert('sedang upload...')
+          alert('berhasil upload...')
         // }
         // else if (this.props.uploadProp.isError){
         //   alert('gagal upload, coba lagi')

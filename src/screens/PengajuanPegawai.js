@@ -13,6 +13,7 @@ import {
   View
 } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
+import moment from "moment";
 
 export default class PengajuanPegawai extends Component {
 
@@ -26,10 +27,10 @@ export default class PengajuanPegawai extends Component {
       backgroundSwasta: false,
       nama: '',
       telp: '',
-      status: '',
-      jenis: '',
-      pensiun: '',
-      pensiunDb: '',
+      status: 'Tetap',
+      jenis: 'BUMN',
+      pensiun: new Date(),
+      // pensiunDb: '',
       lamaKerja: 0,
       alamat: '',
       provinsi: '',
@@ -114,8 +115,11 @@ export default class PengajuanPegawai extends Component {
     await AsyncStorage.setItem("pegawaiNama", this.state.nama)
     await AsyncStorage.setItem("pegawaiTelp", this.state.telp)
     await AsyncStorage.setItem("pegawaiStatus", this.state.status)
+    // console.warn(this.state.status)
     await AsyncStorage.setItem("pegawaiJenis", this.state.jenis)
-    await AsyncStorage.setItem("pegawaiPensiunDb", JSON.stringify(this.state.pensiun).substr(1, 10))
+    // console.warn(this.state.jenis)
+    await AsyncStorage.setItem("pegawaiPensiunDb", JSON.stringify(moment(this.state.pensiun).add(1, 'day')).substr(1, 10))
+    // console.warn(JSON.stringify(this.state.pensiun).substr(1, 10))
     await AsyncStorage.setItem("pegawaiPensiun", this.state.pensiun.toString().substr(0, 15))
     await AsyncStorage.setItem("pegawaiLamaKerja", this.state.lamaKerja)
     await AsyncStorage.setItem("pegawaiAlamat", this.state.alamat)
@@ -135,7 +139,7 @@ export default class PengajuanPegawai extends Component {
         let asPegawaiStatus = await AsyncStorage.getItem('pegawaiStatus')
         let asPegawaiJenis = await AsyncStorage.getItem('pegawaiJenis')
         let asPegawaiPensiun = await AsyncStorage.getItem('pegawaiPensiun')
-        let asPegawaiPensiunDb = await AsyncStorage.getItem('pegawaiPensiunDb')
+        // let asPegawaiPensiunDb = await AsyncStorage.getItem('pegawaiPensiunDb')
         let asPegawaiLamaKerja = await AsyncStorage.getItem('pegawaiLamaKerja')
         let asPegawaiAlamat = await AsyncStorage.getItem('pegawaiAlamat')
         // let asPegawaiTglLahirDb = await AsyncStorage.getItem('PegawaiTglLhrDb')
@@ -146,10 +150,10 @@ export default class PengajuanPegawai extends Component {
         let asPegawaiKodePos = await AsyncStorage.getItem('pegawaiKodePos')
         await this.setState({ nama: asPegawaiNama ? asPegawaiNama : '' })
         await this.setState({ telp: asPegawaiTelp ? asPegawaiTelp : '' })
-        await this.setState({ status: asPegawaiStatus ? asPegawaiStatus : '' })
-        await this.setState({ jenis: asPegawaiJenis ? asPegawaiJenis : '' })
+        await this.setState({ status: asPegawaiStatus ? asPegawaiStatus : 'Tetap' })
+        await this.setState({ jenis: asPegawaiJenis ? asPegawaiJenis : 'BUMN' })
         await this.setState({ pensiun: asPegawaiPensiun ? asPegawaiPensiun : '' })
-        await this.setState({ pensiunDb: asPegawaiPensiunDb ? asPegawaiPensiunDb : '' })
+        // await this.setState({ pensiunDb: asPegawaiPensiunDb ? asPegawaiPensiunDb : '' })
         await this.setState({ lamaKerja: asPegawaiLamaKerja ? asPegawaiLamaKerja : '' })
         await this.setState({ alamat: asPegawaiAlamat ? asPegawaiAlamat : '' })
         await this.setState({ provinsi: asPegawaiProvinsi ? asPegawaiProvinsi : '' })

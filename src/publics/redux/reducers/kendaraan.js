@@ -4,6 +4,7 @@ const initialState = {
     dataWarna: [],
     dataDetailKendaraan: [],
     dataDetailMerk: [],
+    dataKendaraanNasabah: [],
     isLoading: false,
     isFinish: false,
     isError: false,
@@ -152,7 +153,7 @@ export default kendaraan = (state = initialState, action) => {
             }
 
         case 'GET_DETAILMERK_FULFILLED':
-            console.log("data merk: " + action.payload.data)
+            // console.log("data merk: " + action.payload.data)
             return {
                 ...state,
                 isLoading: false,
@@ -161,7 +162,31 @@ export default kendaraan = (state = initialState, action) => {
             }
 
         case 'GET_DETAILMERK_REJECTED':
-            console.log("data merk: " + action.payload.data)
+            // console.log("data merk: " + action.payload.data)
+            return {
+                ...state,
+                isLoading: false,
+                isError: true
+            }
+
+        case 'POST_KENDARAANNASABAH_PENDING':
+            // console.log("data merk: "+action.payload.data)
+            return {
+                ...state,
+                isLoading: true
+            }
+
+        case 'POST_KENDARAANNASABAH_FULFILLED':
+            // console.log("data merk: " + action.payload.data)
+            return {
+                ...state,
+                isLoading: false,
+                isFinish: true,
+                dataKendaraanNasabah: action.payload.data.values
+            }
+
+        case 'POST_KENDARAANNASABAH_REJECTED':
+            // console.log("data merk: " + action.payload.data)
             return {
                 ...state,
                 isLoading: false,

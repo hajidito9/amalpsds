@@ -25,7 +25,7 @@ class SplashScreen extends React.Component {
     return (
       <View style={styles.viewStyles}>
         <Image
-          source={require('../assets/logo.png')}
+          source={require('../assets/splash.png')}
           style={{ alignSelf: 'center' }}
         />
 

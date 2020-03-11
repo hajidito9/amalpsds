@@ -24,7 +24,7 @@ export default class PengajuanMikro extends Component {
       backgroundDagang: true,
       backgroundIndustri: false,
       backgroundJasa: false,
-      bidang:'',
+      bidang:'Dagang',
       nama: '',
       telp: '',
       lamaUsaha: 0,
@@ -135,7 +135,7 @@ export default class PengajuanMikro extends Component {
         await this.setState({ status: asMikroStatus ? asMikroStatus : '' })
         await this.setState({ jenis: asMikroJenis ? asMikroJenis : '' })
         await this.setState({ lamaUsaha: asMikroLamaUsaha ? asMikroLamaUsaha : '' })
-        await this.setState({ bidang: asMikroBidang ? asMikroBidang : '' })
+        await this.setState({ bidang: asMikroBidang ? asMikroBidang : 'Dagang' })
         await this.setState({ jarak: asMikroJarak ? asMikroJarak : '' })
         await this.setState({ alamat: asMikroAlamat ? asMikroAlamat : '' })
         await this.setState({ provinsi: asMikroProvinsi ? asMikroProvinsi : '' })

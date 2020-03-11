@@ -49,3 +49,22 @@ export const getDetailMerk = (merkId) => {
         payload : axios.get(linkApi.ip+'kendaraan/merk/detail/'+merkId)
     }
 }
+
+export const addKendaraanNasabah = (kendaraan_id, merk_id, tipe, status, cc, warna, keterangan, harga, tahun, nobpkb, pengajuan_id) => {
+    return {
+        type: 'POST_KENDARAANNASABAH',
+        payload : axios.post(linkApi.ip+'kendaraan/nasabah', {
+            kendaraan_id:kendaraan_id, 
+            merk_id:merk_id, 
+            tipe:tipe, 
+            status:status, 
+            cc:cc, 
+            warna:warna, 
+            keterangan:keterangan, 
+            harga:harga, 
+            tahun:tahun, 
+            nobpkb:nobpkb, 
+            pengajuan_id:pengajuan_id
+        })
+    }
+}

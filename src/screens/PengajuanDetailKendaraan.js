@@ -35,9 +35,15 @@ class PengajuanDetail extends Component {
             value: 0.1,
             tipeId: '',
             merkId: '',
-            negara:'',
-            persenDp:0,
-            harga:0
+            negara: '',
+            persenDp: 0,
+            tipe: '',
+            status: '',
+            cc: '',
+            warna: '',
+            keterangan: '',
+            tahun: '',
+            harga: 0
         };
     }
 
@@ -88,11 +94,18 @@ class PengajuanDetail extends Component {
         await this.props.dispatch(getDetailKendaraan(this.state.tipeId))
     }
 
-    componentDidMount = async()=> {
+    componentDidMount = async () => {
         await this.getData();
-        this.props.kendaraanProp.dataDetailMerk.map((item, i) => this.setState({negara : item.negara}))
-        this.props.kendaraanProp.dataDetailMerk.map((item, i) => this.setState({persenDp: item.persendp}))
-        this.props.kendaraanProp.dataDetailKendaraan.map((item, i) => this.setState({harga: item.harga}))
+        this.props.kendaraanProp.dataDetailMerk.map((item, i) => this.setState({ negara: item.negara }))
+        this.props.kendaraanProp.dataDetailMerk.map((item, i) => this.setState({ persenDp: item.persendp }))
+        this.props.kendaraanProp.dataDetailKendaraan.map((item, i) => this.setState({ harga: item.harga }))
+        this.props.kendaraanProp.dataDetailKendaraan.map((item, i) => this.setState({ tipe: item.tipe }))
+        this.props.kendaraanProp.dataDetailKendaraan.map((item, i) => this.setState({ status: item.status }))
+        this.props.kendaraanProp.dataDetailKendaraan.map((item, i) => this.setState({ cc: item.cc }))
+        this.props.kendaraanProp.dataDetailKendaraan.map((item, i) => this.setState({ warna: item.warna }))
+        this.props.kendaraanProp.dataDetailKendaraan.map((item, i) => this.setState({ keterangan: item.keterangan }))
+        this.props.kendaraanProp.dataDetailKendaraan.map((item, i) => this.setState({ tahun: item.tahun }))
+
         // console.warn("data: " +  JSON.stringify(this.props.kendaraanProp.dataDetailKendaraan))
         // console.warn("merk: "+this.props.kendaraanProp.dataDetailMerk[0].nama)
         // this.subs = [
@@ -101,6 +114,19 @@ class PengajuanDetail extends Component {
         //         this.getData();
         //     }),
         // ]
+    }
+    pilihKendaraan = async () => {
+        await AsyncStorage.setItem("persenDp", JSON.stringify(this.state.persenDp))
+        await AsyncStorage.setItem("asalKendaraan", this.state.negara)
+        await AsyncStorage.setItem("hargaKendaraan", JSON.stringify(this.state.harga))
+        await AsyncStorage.setItem("idKendaraan", this.state.tipeId)
+        await AsyncStorage.setItem("tipeKendaraan", this.state.tipe)
+        await AsyncStorage.setItem("statusKendaraan", this.state.status)
+        await AsyncStorage.setItem("ccKendaraan", this.state.cc)
+        await AsyncStorage.setItem("warnaKendaraan", this.state.warna)
+        await AsyncStorage.setItem("keteranganKendaraan", this.state.keterangan)
+        await AsyncStorage.setItem("tahunKendaraan", this.state.tahun)
+        this.props.navigation.navigate('Pengajuan1')
     }
 
     // componentWillUnmount(){
@@ -183,7 +209,7 @@ class PengajuanDetail extends Component {
                                     <Text style={{ color: "black", alignSelf: 'flex-end' }}>{this.props.kendaraanProp.dataDetailKendaraan.map((item, i) => item.status)}</Text>
                                 </ListItem>
                                 <ListItem style={{ alignSelf: 'flex-end' }}>
-                                    <NumberFormat value={this.state.harga} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ color: "black", alignSelf: 'flex-end' }}>{value}</Text>}/>
+                                    <NumberFormat value={this.state.harga} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ color: "black", alignSelf: 'flex-end' }}>{value}</Text>} />
                                 </ListItem>
                                 <ListItem style={{ alignSelf: 'flex-end' }}>
                                     <Text style={{ color: "black", alignSelf: 'flex-end' }}>{this.props.kendaraanProp.dataDetailKendaraan.map((item, i) => item.tahun)}</Text>
@@ -191,11 +217,9 @@ class PengajuanDetail extends Component {
                             </List>
                         </View>
                     </View>
-                    <Button style={{ justifyContent: 'center', alignSelf: 'center', width: '90%' }} success onPress={() => 
-                        AsyncStorage.setItem("persenDp",JSON.stringify(this.state.persenDp)).
-                        then(AsyncStorage.setItem("asalKendaraan",this.state.negara).
-                        then(AsyncStorage.setItem("hargaKendaraan",JSON.stringify(this.state.harga)).
-                        then(AsyncStorage.setItem("idKendaraan",this.state.tipeId).then(this.props.navigation.navigate('Pengajuan1')))))}>
+                    <Button style={{ justifyContent: 'center', alignSelf: 'center', width: '90%' }} success onPress={() =>
+                        this.pilihKendaraan()
+                    }>
                         <Text >Pilih Kendaraan</Text>
                     </Button>
                 </Content>

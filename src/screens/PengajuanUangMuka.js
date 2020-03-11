@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import {
     Container, Header, Left, Form, Picker, Input, Label, Item, Body, Right, Button, Icon, Title, Segment, Content, Text
 } from 'native-base';
-import { View } from 'react-native';
+import { Image, View } from 'react-native';
 import SegmentedControlTab from "react-native-segmented-control-tab";
 import Slider from "react-native-slider";
 import AsyncStorage from '@react-native-community/async-storage';
 import { connect } from 'react-redux';
+import ImagePicker from 'react-native-image-picker';
 import { getEmas, getKonversiEmas } from '../publics/redux/actions/emas';
+import { uploadDokumen } from '../publics/redux/actions/upload';
 import NumericInput from 'react-native-numeric-input'
 import NumberFormat from 'react-number-format';
 
@@ -57,18 +59,56 @@ class PengajuanUangMuka extends Component {
             beratKotor: 0,
             jenis: '',
             taksiran: 0,
-            konversiGram:0,
-            konversiKarat:0
+            konversiGram: 0,
+            konversiKarat: 0,
+            filePath: {}
             // diskon:0
         };
     }
+
+    // uploadFile = async () => {
+    // alert('sedang upload...')
+    // await this.props.dispatch(uploadDokumen(this.state.filePath));
+    // await AsyncStorage.setItem("linkDalamMikro", this.props.uploadProp.dataUpload)
+    // if  (this.props.uploadProp.isLoading){
+    // alert('sedang upload...')
+    // }
+    // else if (this.props.uploadProp.isError){
+    // alert('gagal upload, coba lagi')
+    // }
+    // else {
+    // this.props.navigation.navigate('PengajuanFileMikro')
+    // }
+    // }
+
+    chooseFile = () => {
+        let options = {
+            title: 'Pilih Gambar',
+            storageOptions: {
+                skipBackup: true,
+                path: 'images',
+            },
+        };
+        ImagePicker.showImagePicker(options, response => {
+            if (response.didCancel) {
+                alert('Batal Pilih Gambar');
+            } else if (response.error) {
+                alert('Pilih Gambar Error: ' + response.error);
+            } else {
+                let source = response;
+                this.setState({
+                    filePath: source,
+                });
+            }
+        });
+    };
 
     ubahJenis(value) {
         this.setState({
             jenis: value
         });
     }
-    
+
     _renderComponent = () => {
         if (this.state.selectedIndex === 0)
             return (
@@ -87,7 +127,7 @@ class PengajuanUangMuka extends Component {
                     <View style={{ marginLeft: '15%', flexDirection: 'column' }}>
                         <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: 'green', fontWeight: 'bold' }}>{this.props.tabEmasProp.dataEmas.map((item, i) => item.no_rek)}</Text>
                         <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: 'green', fontWeight: 'bold' }}>{this.props.tabEmasProp.dataEmas.map((item, i) => item.saldo)} gram</Text>
-                        <NumberFormat value={this.state.gram * this.state.konversiGram} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: '#2ECC71', fontWeight: 'bold' }}>{value}</Text>}/>
+                        <NumberFormat value={this.state.gram * this.state.konversiGram} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: '#2ECC71', fontWeight: 'bold' }}>{value}</Text>} />
                     </View>
                 </View>
                 // <Text>emas</Text>
@@ -96,9 +136,27 @@ class PengajuanUangMuka extends Component {
             return (
                 <View >
                     <Form>
-                        {/* <Item stackedLabel> */}
-                        {/* <View style={{flexDirection:'row'}}> */}
-                        {/* <Label>Jenis Perhiasan</Label> */}
+                        {this.state.filePath.uri == undefined ?
+                            <Image
+                                source={require("../assets/icons8-camera-100.png")}
+                                style={{ width: 100, alignSelf: 'center', marginBottom: '5%', marginTop: '5%', height: 100 }}
+                            /> :
+                            <Image
+                                source={{ uri: this.state.filePath.uri }}
+                                style={{ width: 250, alignSelf: 'center', marginBottom: '5%', marginTop: '5%', borderWidth: 2, borderColor: 'green', height: 250 }}
+                            />
+                        }
+                        <Button
+                            style={{ borderWidth: 2, borderColor: 'green', width: '90%', backgroundColor: 'white', alignSelf: 'center', justifyContent: 'center' }}
+                            onPress={this.chooseFile.bind(this)}>
+                            <Text style={{ color: 'green' }}>Ambil/Pilih Foto Perhiasan</Text>
+                        </Button>
+                        {/* <Button
+                            style={{ width: '90%', backgroundColor: '#2ECC71', alignSelf: 'center', justifyContent: 'center' }}
+                            onPress={() => this.uploadFile()}
+                        >
+                            <Text>Simpan</Text>
+                        </Button> */}
                         <Picker
                             mode="dropdown"
                             placeholder="Jenis"
@@ -125,21 +183,21 @@ class PengajuanUangMuka extends Component {
                         {/* <Input placeholderTextColor="grey" style={{ color: "grey" }} /> */}
                         {/* </Item> */}
                         <Item stackedLabel>
-                        <Label>Kadar (Karat) </Label>
-                            <NumericInput minValue={1} maxValue={24} type='up-down' onChange={kadar => this.setState({ kadar })} placeholder="0" placeholderTextColor="grey" borderColor ='white' />
+                            <Label>Kadar (Karat) </Label>
+                            <NumericInput minValue={1} maxValue={24} type='up-down' onChange={kadar => this.setState({ kadar })} placeholder="0" placeholderTextColor="grey" borderColor='white' />
                         </Item>
                         <Item stackedLabel>
                             <Label>Berat Kotor (gram)</Label>
-                            <NumericInput minValue={1.0} step={0.1} valueType={'real'} type='up-down' onChange={beratKotor => this.setState({ beratKotor })} placeholder="0" placeholderTextColor="grey" borderColor ='white' />
+                            <NumericInput minValue={1.0} step={0.1} valueType={'real'} type='up-down' onChange={beratKotor => this.setState({ beratKotor })} placeholder="0" placeholderTextColor="grey" borderColor='white' />
                         </Item>
                         <Item stackedLabel>
                             <Label>Berat Bersih (gram)</Label>
-                            <NumericInput minValue={1.0} step={0.1} valueType={'real'} type='up-down' onChange={beratBersih => this.setState({ beratBersih })} placeholder="0" placeholderTextColor="grey" borderColor ='white' />
+                            <NumericInput minValue={1.0} step={0.1} valueType={'real'} type='up-down' onChange={beratBersih => this.setState({ beratBersih })} placeholder="0" placeholderTextColor="grey" borderColor='white' />
                         </Item>
                         <Item stackedLabel>
                             <Label>Perkiraan Taksiran (Plafon 90%)</Label>
                             {/* <Text style={{ color: "#2ECC71" }}>Rp {this.state.kadar * 89486 * this.state.beratBersih} </Text> */}
-                            <NumberFormat value={((this.state.kadar * this.state.konversiKarat * this.state.beratBersih) * 0.9).toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{fontWeight:'bold', color: "#2ECC71" }}>{value}</Text>}/>
+                            <NumberFormat value={((this.state.kadar * this.state.konversiKarat * this.state.beratBersih) * 0.9).toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ fontWeight: 'bold', color: "#2ECC71" }}>{value}</Text>} />
                         </Item>
                     </Form>
                 </View>
@@ -164,7 +222,7 @@ class PengajuanUangMuka extends Component {
                 </Button>
             )
         }
-        else if (this.state.selectedIndex === 2 && (this.state.kadar * this.state.konversiKarat * this.state.beratBersih < (this.state.harga * this.state.persenDp).toFixed(0))) {
+        else if (this.state.selectedIndex === 2 && (((this.state.kadar * this.state.konversiKarat * this.state.beratBersih) * 0.9).toFixed(0) < (this.state.harga * this.state.persenDp).toFixed(0))) {
             return (
                 <Button
                     disabled
@@ -178,7 +236,7 @@ class PengajuanUangMuka extends Component {
             return (
                 <Button
                     style={{ justifyContent: 'center', alignSelf: 'center', width: '90%' }}
-                    success 
+                    success
                     onPress={() => this.setUangMuka()}>
                     <Text>Lanjut</Text>
                 </Button>
@@ -198,7 +256,7 @@ class PengajuanUangMuka extends Component {
         await this.props.dispatch(getKonversiEmas('karat'))
         this.props.tabEmasProp.dataKonversi.map((item, i) => this.setState({ konversiKarat: (item.jual / 24).toFixed(0) }))
         this.props.tabEmasProp.dataEmas.map((item, i) => this.setState({ saldo: item.saldo * this.state.konversiGram }))
-        this.props.tabEmasProp.dataEmas.map((item, i) => this.setState({ gram: item.saldo}))
+        this.props.tabEmasProp.dataEmas.map((item, i) => this.setState({ gram: item.saldo }))
         let asMinDp = parseFloat(await AsyncStorage.getItem("persenDp"))
         let asHarga = Number(await AsyncStorage.getItem("hargaKendaraan"))
         let asNegara = await AsyncStorage.getItem("asalKendaraan")
@@ -219,38 +277,42 @@ class PengajuanUangMuka extends Component {
         // let diskonAng = ((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100
     }
 
-    setUangMuka= async()=>{
-        if (this.state.selectedIndex === 0){
-            await AsyncStorage.setItem("jenisDp","cash")
-            await AsyncStorage.setItem("persenDpPengajuan",JSON.stringify(this.state.persenDp))
-            await AsyncStorage.setItem("uangDp",JSON.stringify((this.state.harga * this.state.persenDp).toFixed(0)))
-            await AsyncStorage.setItem("angsuran",JSON.stringify((((this.state.harga - (this.state.harga * this.state.persenDp)) / this.state.tenor) + ((this.state.harga - (this.state.harga * this.state.persenDp)) * 0.009)* (1-(((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100))).toFixed(0)))
-            await AsyncStorage.setItem("diskonAngsuran",JSON.stringify(((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100))
-            await AsyncStorage.setItem("marhunBih",JSON.stringify((this.state.harga - (this.state.harga * this.state.persenDp)).toFixed(0)))
+    setUangMuka = async () => {
+        if (this.state.selectedIndex === 0) {
+            await AsyncStorage.setItem("jenisDp", "cash")
+            await AsyncStorage.setItem("persenDpPengajuan", JSON.stringify(this.state.persenDp))
+            await AsyncStorage.setItem("uangDp", (this.state.harga * this.state.persenDp).toFixed(0))
+            await AsyncStorage.setItem("angsuran", (((this.state.harga - (this.state.harga * this.state.persenDp)) / this.state.tenor) + ((this.state.harga - (this.state.harga * this.state.persenDp)) * 0.009) * (1 - (((0.0056 + (0.0111 * (89 - (((this.state.harga - (this.state.harga * this.state.persenDp)) / this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100))).toFixed(0))
+            await AsyncStorage.setItem("diskonAngsuran", JSON.stringify(((0.0056 + (0.0111 * (89 - (((this.state.harga - (this.state.harga * this.state.persenDp)) / this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100))
+            await AsyncStorage.setItem("marhunBih", (this.state.harga - (this.state.harga * this.state.persenDp)).toFixed(0))
             this.props.navigation.navigate('PengajuanNasabah')
         }
-        else if (this.state.selectedIndex === 1){
-            await AsyncStorage.setItem("jenisDp","tabEmas")
-            await AsyncStorage.setItem("persenDpPengajuan",JSON.stringify(this.state.persenDp))
-            await AsyncStorage.setItem("uangDp",JSON.stringify((this.state.harga * this.state.persenDp).toFixed(0)))
-            await AsyncStorage.setItem("gramDp",JSON.stringify(this.state.gram))
-            await AsyncStorage.setItem("hargaEmasDp",JSON.stringify(this.state.saldo))
-            await AsyncStorage.setItem("angsuran",JSON.stringify((((this.state.harga - (this.state.harga * this.state.persenDp)) / this.state.tenor) + ((this.state.harga - (this.state.harga * this.state.persenDp)) * 0.009)* (1-(((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100))).toFixed(0)))
-            await AsyncStorage.setItem("diskonAngsuran",JSON.stringify(((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100))
-            await AsyncStorage.setItem("marhunBih",JSON.stringify(this.state.harga - (this.state.harga * this.state.persenDp)))
+        else if (this.state.selectedIndex === 1) {
+            await AsyncStorage.setItem("jenisDp", "tabEmas")
+            await AsyncStorage.setItem("persenDpPengajuan", JSON.stringify(this.state.persenDp))
+            await AsyncStorage.setItem("uangDp", (this.state.harga * this.state.persenDp).toFixed(0))
+            await AsyncStorage.setItem("gramDp", JSON.stringify(this.state.gram))
+            await AsyncStorage.setItem("hargaEmasDp", this.state.saldo.toFixed(0))
+            await AsyncStorage.setItem("angsuran", (((this.state.harga - (this.state.harga * this.state.persenDp)) / this.state.tenor) + ((this.state.harga - (this.state.harga * this.state.persenDp)) * 0.009) * (1 - (((0.0056 + (0.0111 * (89 - (((this.state.harga - (this.state.harga * this.state.persenDp)) / this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100))).toFixed(0))
+            await AsyncStorage.setItem("diskonAngsuran", JSON.stringify(((0.0056 + (0.0111 * (89 - (((this.state.harga - (this.state.harga * this.state.persenDp)) / this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100))
+            await AsyncStorage.setItem("marhunBih", (this.state.harga - (this.state.harga * this.state.persenDp)).toFixed(0))
             this.props.navigation.navigate('PengajuanNasabah')
         }
-        else if (this.state.selectedIndex === 2){
-            await AsyncStorage.setItem("jenisDp","jaminan")
-            await AsyncStorage.setItem("persenDpPengajuan",JSON.stringify(this.state.persenDp))
-            await AsyncStorage.setItem("uangDp",JSON.stringify((this.state.harga * this.state.persenDp).toFixed(0)))
-            await AsyncStorage.setItem("jenisPerhiasanDp",this.state.jenis)
-            await AsyncStorage.setItem("kadarPerhiasanDp",JSON.stringify(this.state.kadar))
-            await AsyncStorage.setItem("brtKotorPerhiasanDp",JSON.stringify(this.state.beratKotor))
-            await AsyncStorage.setItem("brtBersihPerhiasanDp",JSON.stringify(this.state.beratBersih))
-            await AsyncStorage.setItem("taksiranPerhiasanDp",JSON.stringify(this.state.kadar * this.state.konversiKarat * this.state.beratBersih))
-            await AsyncStorage.setItem("angsuran",JSON.stringify((((this.state.harga) / this.state.tenor) + ((this.state.harga) * 0.009)).toFixed(0)))
-            await AsyncStorage.setItem("marhunBih",JSON.stringify(this.state.harga - (this.state.harga * this.state.persenDp)))
+        else if (this.state.selectedIndex === 2) {
+            alert('sedang upload...')
+            await this.props.dispatch(uploadDokumen(this.state.filePath))
+            alert('berhasil upload...')
+            await AsyncStorage.setItem("linkJaminan", this.props.uploadProp.dataUpload)
+            await AsyncStorage.setItem("jenisDp", "jaminan")
+            await AsyncStorage.setItem("persenDpPengajuan", JSON.stringify(this.state.persenDp))
+            await AsyncStorage.setItem("uangDp", (this.state.harga * this.state.persenDp).toFixed(0))
+            await AsyncStorage.setItem("jenisPerhiasanDp", this.state.jenis)
+            await AsyncStorage.setItem("kadarPerhiasanDp", this.state.kadar.toFixed(0))
+            await AsyncStorage.setItem("brtKotorPerhiasanDp", JSON.stringify(this.state.beratKotor))
+            await AsyncStorage.setItem("brtBersihPerhiasanDp", JSON.stringify(this.state.beratBersih))
+            await AsyncStorage.setItem("taksiranPerhiasanDp", ((this.state.kadar * this.state.konversiKarat * this.state.beratBersih) * 0.9).toFixed(0))
+            await AsyncStorage.setItem("angsuran", (((this.state.harga) / this.state.tenor) + ((this.state.harga) * 0.009)).toFixed(0))
+            await AsyncStorage.setItem("marhunBih", (this.state.harga - (this.state.harga * this.state.persenDp)).toFixed(0))
             this.props.navigation.navigate('PengajuanNasabah')
         }
     }
@@ -277,7 +339,7 @@ class PengajuanUangMuka extends Component {
                                 <View style={{ flexDirection: 'column' }}>
                                     <Text style={{ color: 'green', fontWeight: 'bold' }}>{this.state.merkKendaraan + ' ' + this.state.tipeKendaraan + ' ' + this.state.statusKendaraan + ' Warna ' + this.state.warnaKendaraan}</Text>
                                     <Text></Text>
-                                    <View style={{ flexDirection: 'row', marginLeft:'5%' }}>
+                                    <View style={{ flexDirection: 'row', marginLeft: '5%' }}>
                                         <View style={{ flexDirection: 'column' }}>
                                             <Text style={{ alignSelf: 'flex-start', fontSize: 13, color: 'black' }}>Asal Negara Kendaraan</Text>
                                             <Text style={{ alignSelf: 'flex-start', fontSize: 13, color: 'black' }}>Minimal Persen Uang Muka</Text>
@@ -291,10 +353,10 @@ class PengajuanUangMuka extends Component {
                                             <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: 'green', fontWeight: 'bold' }}>{this.state.negara}</Text>
                                             <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: 'green', fontWeight: 'bold' }}>{(this.state.minDp * 100).toFixed(0)}%</Text>
                                             <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: '#2ECC71', fontWeight: 'bold' }}>{(this.state.persenDp * 100).toFixed(0)}%</Text>
-                                            <NumberFormat value={this.state.harga} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: 'green', fontWeight: 'bold' }}>{value}</Text>}/>
+                                            <NumberFormat value={this.state.harga} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: 'green', fontWeight: 'bold' }}>{value}</Text>} />
                                             <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: 'green', fontWeight: 'bold' }}>{this.state.tenor} Bulan</Text>
-                                            <NumberFormat value={(this.state.harga * this.state.persenDp).toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ alignSelf: 'flex-end', fontSize: 13, fontWeight: 'bold', color: '#2ECC71' }}>{value}</Text>}/>
-                                            {this.state.selectedIndex === 0 || this.state.selectedIndex === 1 ? <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: '#2ECC71', fontWeight: 'bold' }}>{((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) > 0 ? ((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) : 0 }%</Text> : <Text></Text>}
+                                            <NumberFormat value={(this.state.harga * this.state.persenDp).toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ alignSelf: 'flex-end', fontSize: 13, fontWeight: 'bold', color: '#2ECC71' }}>{value}</Text>} />
+                                            {this.state.selectedIndex === 0 || this.state.selectedIndex === 1 ? <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: '#2ECC71', fontWeight: 'bold' }}>{((0.0056 + (0.0111 * (89 - (((this.state.harga - (this.state.harga * this.state.persenDp)) / this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) > 0 ? ((0.0056 + (0.0111 * (89 - (((this.state.harga - (this.state.harga * this.state.persenDp)) / this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) : 0}%</Text> : <Text></Text>}
                                         </View>
                                     </View>
                                 </View>
@@ -312,13 +374,13 @@ class PengajuanUangMuka extends Component {
                             <View style={{ alignSelf: 'center', alignItems: 'center' }}>
                                 <Text style={{ fontSize: 13 }}>Angsuran per Bulan </Text>
                                 {/* <Text style={{ fontSize: 20, color: 'green' }}> */}
-                                    {
+                                {
                                     // this.state.selectedIndex === 1 || this.state.selectedIndex === 2 ?
                                     this.state.selectedIndex === 2 ?
-                                    <NumberFormat value={(((this.state.harga) / this.state.tenor) + ((this.state.harga) * 0.009)).toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ fontSize: 20, color: 'green' }}>{value}</Text>}/>
-                                         :
-                                        <NumberFormat value={(((this.state.harga - (this.state.harga * this.state.persenDp)) / this.state.tenor) + ((this.state.harga - (this.state.harga * this.state.persenDp)) * 0.009)* (1-(((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100))).toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ fontSize: 20, color: 'green' }}>{value}</Text>} />
-                                        
+                                        <NumberFormat value={(((this.state.harga) / this.state.tenor) + ((this.state.harga) * 0.009)).toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ fontSize: 20, color: 'green' }}>{value}</Text>} />
+                                        :
+                                        <NumberFormat value={(((this.state.harga - (this.state.harga * this.state.persenDp)) / this.state.tenor) + ((this.state.harga - (this.state.harga * this.state.persenDp)) * 0.009) * (1 - (((0.0056 + (0.0111 * (89 - (((this.state.harga - (this.state.harga * this.state.persenDp)) / this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100))).toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ fontSize: 20, color: 'green' }}>{value}</Text>} />
+
                                 }
                                 {/* </Text> */}
                             </View>
@@ -342,7 +404,8 @@ class PengajuanUangMuka extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        tabEmasProp: state.emas
+        tabEmasProp: state.emas,
+        uploadProp: state.upload,
     }
 }
 

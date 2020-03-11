@@ -16,6 +16,7 @@ import {
 } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import NumericInput from 'react-native-numeric-input';
+import moment from "moment";
 
 export default class PengajuanNasabah extends Component {
 
@@ -25,7 +26,7 @@ export default class PengajuanNasabah extends Component {
       jenisKelamin: '',
       nama: '',
       tempatLahir: '',
-      tglLahir: '',
+      tglLahir: new Date(),
       // tglLahirDb: '',
       email: '',
       noHp: '',
@@ -86,7 +87,7 @@ export default class PengajuanNasabah extends Component {
     await AsyncStorage.setItem("nasabahEmail", this.state.email)
     await AsyncStorage.setItem("nasabahJk", this.state.jenisKelamin)
     await AsyncStorage.setItem("nasabahTl", this.state.tempatLahir)
-    await AsyncStorage.setItem("nasabahTglLhrDb", JSON.stringify(this.state.tglLahir).substr(1, 10))
+    await AsyncStorage.setItem("nasabahTglLhrDb", JSON.stringify(moment(this.state.tglLahir).add(1, 'day')).substr(1, 10))
     await AsyncStorage.setItem("nasabahTglLhr", this.state.tglLahir.toString().substr(0, 15))
     // await AsyncStorage.setItem("nasabahTglLhrDb", this.state.tglLahir.toString().substr(0, 15))
     // await AsyncStorage.setItem("nasabahTglLhr", JSON.stringify(this.state.tglLahir))
@@ -101,6 +102,7 @@ export default class PengajuanNasabah extends Component {
   }
 
   componentDidMount = async () => {
+    // console.warn(await AsyncStorage.getItem("linkJaminan"))
     this.subs = [
       this.props.navigation.addListener('willFocus', async () => {
         let asNasabahNama = await AsyncStorage.getItem('nasabahNama')
