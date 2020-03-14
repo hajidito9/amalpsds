@@ -7,13 +7,26 @@ import Icon3 from 'react-native-vector-icons/dist/FontAwesome5';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 // import ToggleSwitch from 'toggle-switch-react-native';
 // import { Switch } from 'react-native-switch';
+import { connect } from 'react-redux';
+import { getJourney } from '../publics/redux/actions/journey';
+import NumberFormat from 'react-number-format';
+import AsyncStorage from '@react-native-community/async-storage';
+import { getPengajuan } from '../publics/redux/actions/pengajuan';
 
-export default class Journey extends Component {
+class Journey extends Component {
   constructor(props) {
     super(props);
     this.state = {
       value: 0.3,
       toggled: false,
+      sekarang: 0,
+      sisabulan: 0,
+      sisabayar: 0,
+      sudahbayar: 0,
+      angsuran: 0,
+      tenor: 0,
+      step: 0,
+      verifikasi: true
     };
   }
 
@@ -26,67 +39,104 @@ export default class Journey extends Component {
         textAlign: 'center',
         color: 'white'
       },
+      headerLeft: null,
       headerStyle: {
         elevation: null,
-        backgroundColor: '#004d4d'
+        backgroundColor: '#2ECC71'
       },
       headerRight: (
-        <Button style={{ elevation: 0, marginTop: 5, backgroundColor: '#004d4d' }}>
+        <Button style={{ elevation: 0, marginTop: 5, backgroundColor: '#2ECC71' }}>
           <Icon3 name='history' style={{ fontSize: 20, marginRight: 20, color: 'white' }} />
         </Button>
       ),
     }
   }
 
+  componentDidMount = async () => {
+    this.subs = [
+      this.props.navigation.addListener('willFocus', async () => {
+        let user_id = await AsyncStorage.getItem("userId")
+        await this.props.dispatch(getJourney(user_id))
+        // console.warn(this.props.journeyProp.dataJourney)
+        await this.props.journeyProp.dataJourney.map((item, i) =>
+          // console.warn(item.verifikasi)
+          this.setState({
+            sekarang: item.sekarang
+            , sisabulan: item.sisabulan
+            , sisabayar: item.sisabayar
+            , sudahbayar: item.sudahbayar
+            , angsuran: item.angsuran
+            , tenor: item.tenor
+            , step: item.step
+          })
+        )
+      }),
+    ]
+    // this.setState({step: (this.state.sekarang / this.state.tenor).toFixed(2)})
+    // console.warn(this.state.step)
+  }
+
+  componentWillUnmount() {
+    this.subs.forEach(sub => {
+      sub.remove()
+    })
+  }
+  // ubahStep = step => this.setState({ step });
+
   render() {
+    // let step= (this.state.sekarang / this.state.tenor).toFixed(2)
     return (
       <Container>
         <Content style={{ backgroundColor: '#e6e6e6', }}>
           <Card >
             <CardItem cardBody style={{ backgroundColor: '#004d4d', }}>
               <View style={styles.container}>
-                <View style={{flexDirection:'row'}}>
-              <Image
-                  source={require('../assets/icons8-motorcycle-52.png')}
-                  style={{ marginLeft: '30%', width: 30, height: 30, }} />
+                <View style={{ flexDirection: 'row' }}>
                   <Image
-                  source={require('../assets/icons8-flag-2-40.png')}
-                  style={{ marginLeft: '60%', width: 20, height: 20, }} />
-                  </View>
+                    source={require('../assets/icons8-motorcycle-52.png')}
+                    style={{ marginLeft: (this.state.step * 90) + '%', width: 30, height: 30, }} />
+                  <Image
+                    source={require('../assets/icons8-flag-2-40.png')}
+                    style={{ marginLeft: (96 - (this.state.step * 100)) + '%', width: 15, height: 15, }} />
+                  {/* {console.warn('jarak'+(100-(this.state.step * 100)))} */}
+                </View>
                 <Slider
                   thumbTintColor="#d9d9d9"
                   minimumTrackTintColor="white"
                   maximumTrackTintColor="#66ff33"
-                  value={this.state.value}
+                  // minimumValue={this.state.step}
+                  value={this.state.step}
+                  // onValueChange={this.ubahStep}
+                  // value={0.17}
                   disabled
                 />
-                <Text style={{ fontSize: 15, color: 'white' }}>Step: 3</Text>
+                <Text style={{ fontSize: 15, color: 'white' }}>Step: {this.state.sekarang}</Text>
                 <Text></Text>
                 <Text style={{ fontSize: 20, color: 'white' }}>Keep Moving!</Text>
               </View>
             </CardItem>
-            <View style={{flexDirection:'row', padding:10}}>
-               <View style={{ flexDirection: 'column', alignItems:'center' }}>
-                  <Text style={{ color: 'green' }}>3</Text>
-                  <Text style={{ color: 'grey' }}>Bulan</Text>
-                </View>
-                <View style={{ flexDirection: 'column', alignItems:'center' }}>
-                  <Text style={{ color: 'green' }}>Rp 40,500,000</Text>
-                  <Text style={{ color: 'grey' }}>Terbayar</Text>
-                </View>
-                <View style={{ flexDirection: 'column', marginLeft:'2%', alignItems:'center' }}>
-                  <Text style={{ color: 'red' }}>9</Text>
-                  <Text style={{ color: 'grey'}}>Sisa Bulan</Text>
-                </View>
-                <View style={{ flexDirection: 'column', alignItems:'center' }}>
-                  <Text style={{ color: 'red'}}>Rp 80,500,000</Text>
-                  <Text style={{ color: 'grey' }}>Sisa Bayar</Text>
-                </View>
-                </View>
+            <View style={{ flexDirection: 'row', alignSelf: 'center', padding: 10 }}>
+              <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+                <Text style={{ color: 'green' }}>{this.state.sekarang}</Text>
+                <Text style={{ color: 'grey' }}>Bulan</Text>
+              </View>
+              <View style={{ flexDirection: 'column', marginLeft: '1%', alignItems: 'center' }}>
+                <NumberFormat value={this.state.sudahbayar} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ color: 'green' }}>{value}</Text>} />
+                <Text style={{ color: 'grey' }}>Terbayar</Text>
+              </View>
+              <View style={{ flexDirection: 'column', marginLeft: '1%', alignItems: 'center' }}>
+                <Text style={{ color: 'red' }}>{this.state.sisabulan}</Text>
+                <Text style={{ color: 'grey' }}>Sisa Bulan</Text>
+              </View>
+              <View style={{ flexDirection: 'column', marginLeft: '1%', alignItems: 'center' }}>
+                <NumberFormat value={this.state.sisabayar} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ color: 'red' }}>{value}</Text>} />
+                <Text style={{ color: 'grey' }}>Sisa Bayar</Text>
+              </View>
+            </View>
           </Card>
           <View style={{ alignSelf: 'center' }}>
             <View style={{ marginTop: '10%', alignItems: 'center' }}>
-              <Text style={{ fontWeight: 'bold', fontSize: 30 }}>Rp. 1,500,000</Text>
+              <NumberFormat value={this.state.angsuran} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ fontWeight: 'bold', fontSize: 30 }}>{value}</Text>} />
               <Text style={{ fontWeight: 'bold', color: 'grey', fontSize: 15 }}>Cicilan Bulanan Anda</Text>
             </View>
             <View style={{ marginTop: '10%', alignItems: 'center', marginBottom: '5%' }}>
@@ -127,3 +177,12 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   }
 });
+
+const mapStateToProps = (state) => {
+  return {
+    journeyProp: state.journey,
+    pengajuanProp: state.pengajuan,
+  }
+}
+
+export default connect(mapStateToProps)(Journey);

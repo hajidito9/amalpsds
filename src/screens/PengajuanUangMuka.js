@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
     Container, Header, Left, Form, Picker, Input, Label, Item, Body, Right, Button, Icon, Title, Segment, Content, Text
 } from 'native-base';
-import { Image, View } from 'react-native';
+import { Image, View,Alert } from 'react-native';
 import SegmentedControlTab from "react-native-segmented-control-tab";
 import Slider from "react-native-slider";
 import AsyncStorage from '@react-native-community/async-storage';
@@ -299,9 +299,9 @@ class PengajuanUangMuka extends Component {
             this.props.navigation.navigate('PengajuanNasabah')
         }
         else if (this.state.selectedIndex === 2) {
-            alert('sedang upload...')
+            Alert.alert('sedang upload...')
             await this.props.dispatch(uploadDokumen(this.state.filePath))
-            alert('berhasil upload...')
+            Alert.alert('berhasil upload...')
             await AsyncStorage.setItem("linkJaminan", this.props.uploadProp.dataUpload)
             await AsyncStorage.setItem("jenisDp", "jaminan")
             await AsyncStorage.setItem("persenDpPengajuan", JSON.stringify(this.state.persenDp))

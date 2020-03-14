@@ -12,6 +12,9 @@ import mikro from './mikro'
 import nasabah from './nasabah'
 import pegawai from './pegawai'
 import pengajuan from './pengajuan'
+import journey from './journey'
+import vaccount from './vaccount'
+import gcash from './gcash'
 
 const appReducer = combineReducers({
     login,
@@ -25,7 +28,10 @@ const appReducer = combineReducers({
     mikro,
     nasabah,
     pegawai,
-    pengajuan
+    pengajuan,
+    journey,
+    vaccount,
+    gcash
 });
 
 export default appReducer;

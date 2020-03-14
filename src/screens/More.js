@@ -11,18 +11,18 @@ export default class More extends Component {
       headerTitle: 'More',
       headerTintColor: "white",
       headerTitleStyle: {
-        width: '90%',
+        width: '100%',
         textAlign: 'center',
         color: 'white'
       },
       headerStyle: {
         elevation: null,
-        backgroundColor: '#004d4d'
+        backgroundColor: '#2ECC71'
       },
     }
   }
 
-  logOut = async()=>{
+  logOut = async () => {
     await AsyncStorage.clear();
     this.props.navigation.navigate('AuthLoading')
   }
@@ -83,12 +83,14 @@ export default class More extends Component {
               </Button>
             </Left>
             <Body>
-              <TouchableOpacity onPress = {this.logOut}>
-              <Text style={{ color: 'grey' }}>Log Out</Text>
+              <TouchableOpacity onPress={this.logOut}>
+                <Text style={{ color: 'grey' }}>Log Out</Text>
               </TouchableOpacity>
             </Body>
             <Right style={{ marginTop: '2%' }}>
-              <Icon name="arrow-forward" />
+              <TouchableOpacity onPress={this.logOut}>
+                <Icon name="arrow-forward" />
+              </TouchableOpacity>
             </Right>
           </ListItem>
         </Content>

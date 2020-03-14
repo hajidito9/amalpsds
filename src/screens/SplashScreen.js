@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image,Dimensions } from 'react-native';
+const { width } = Dimensions.get('window')
 
 class SplashScreen extends React.Component {
   performTimeConsumingTask = async () => {
@@ -26,7 +27,8 @@ class SplashScreen extends React.Component {
       <View style={styles.viewStyles}>
         <Image
           source={require('../assets/splash.png')}
-          style={{ alignSelf: 'center' }}
+          style={{ flex: 1, width:width,
+          resizeMode: 'stretch' }}
         />
 
       </View>

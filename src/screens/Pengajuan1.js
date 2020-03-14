@@ -33,18 +33,12 @@ class Pengajuan1 extends Component {
       tipeKendaraan: '',
       statusKendaraan: '',
       warnaKendaraan: '',
-      namaCabang: ''
+      namaCabang: '',
+      lunas:true
     };
   }
 
   componentDidMount = async () => {
-    let user_id = await AsyncStorage.getItem("userId")
-    await this.props.dispatch(getPengajuan(user_id))
-    let adaPengajuan = await this.props.pengajuanProp.dataPengajuanNasabah.length
-    if (adaPengajuan > 0) {
-      this.props.navigation.navigate('PengajuanStatus')
-    }
-    else {
       this.subs = [
         this.props.navigation.addListener('willFocus', async () => {
           let asKategori = await AsyncStorage.getItem('kategoriKendaraan')
@@ -68,7 +62,6 @@ class Pengajuan1 extends Component {
           this.setState({ namaCabang: asNamaCabang ? asNamaCabang : '' })
         }),
       ]
-    }
   }
 
   // shouldComponentUpdate= async () => {
@@ -118,6 +111,7 @@ class Pengajuan1 extends Component {
         textAlign: 'center',
         color: 'white'
       },
+      headerLeft: null,
       headerStyle: {
         elevation: null,
         backgroundColor: '#2ECC71'

@@ -19,7 +19,9 @@ import uploadDepanMikro from '../screens/uploadDepanMikro';
 import uploadDalamMikro from '../screens/uploadDalamMikro';
 import PengajuanMerkKendaraan from '../screens/PengajuanMerkKendaraan';
 import PengajuanStatusKendaraan from '../screens/PengajuanStatusKendaraan';
-import PengajuanStatus from '../screens/PengajuanStatus';
+import PengajuanStatus1 from '../screens/PengajuanStatus1';
+import PengajuanStatus2 from '../screens/PengajuanStatus2';
+import PengajuanStatus3 from '../screens/PengajuanStatus3';
 import PengajuanListKendaraan from '../screens/PengajuanListKendaraan';
 import PengajuanWarnaKendaraan from '../screens/PengajuanWarnaKendaraan';
 import PengajuanDetailKendaraan from '../screens/PengajuanDetailKendaraan';
@@ -39,6 +41,7 @@ import Profile from '../screens/Profile';
 import Pembayaran from '../screens/Pembayaran';
 import Transfer from '../screens/Transfer';
 import Transfer2 from '../screens/Transfer2';
+import Transfer3 from '../screens/Transfer3';
 import More from '../screens/More';
 import SplashScreen from '../screens/SplashScreen';
 import Login from '../screens/Login';
@@ -82,6 +85,10 @@ const MoreStack = createStackNavigator({
 // );
 
 const PengajuanStack = createStackNavigator({
+  
+  PengajuanStatus1: {
+    screen: PengajuanStatus1
+  },
   Pengajuan1: {
     screen: Pengajuan1
   },
@@ -108,9 +115,6 @@ const PengajuanStack = createStackNavigator({
   },
   PengajuanStatusKendaraan: {
     screen: PengajuanStatusKendaraan
-  },
-  PengajuanStatus: {
-    screen: PengajuanStatus
   },
   PengajuanListKendaraan: {
     screen: PengajuanListKendaraan
@@ -207,6 +211,9 @@ HomeStack.navigationOptions = ({ navigation }) => {
 };
 
 const PembayaranStack = createStackNavigator({
+  PengajuanStatus3: {
+    screen: PengajuanStatus3
+  },
   Pembayaran: {
     screen: Pembayaran
   },
@@ -216,10 +223,16 @@ const PembayaranStack = createStackNavigator({
   Transfer2: {
     screen: Transfer2
   },
+  Transfer3: {
+    screen: Transfer3
+  },
 },
 )
 
 const JourneyStack = createStackNavigator({
+  PengajuanStatus2: {
+    screen: PengajuanStatus2
+  },
   Journey: {
     screen: Journey
   }

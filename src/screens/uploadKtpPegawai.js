@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, FlatList, Image, List, TextInput, TouchableOpacity, ScrollView} from 'react-native'
+import {View, FlatList, Alert,Image, List, TextInput, TouchableOpacity, ScrollView} from 'react-native'
 import { Tab, Header,NumberInput, Input, Left, Right, Title, TabHeading, Tabs, CardItem, Layout, Body, Text, Button, Container, Picker, Content, Form, Item, Icon, Label, ListItem} from 'native-base';
 // import SwitchToggle from 'react-native-switch-toggle';
 import ImagePicker from 'react-native-image-picker';
@@ -15,11 +15,11 @@ class uploadKtpPegawai extends Component{
       };
       
       uploadFile = async() => {
-        alert('sedang upload...')
+        Alert.alert('sedang upload...')
         await this.props.dispatch(uploadDokumen(this.state.filePath));
         await AsyncStorage.setItem("linkKtpPegawai",this.props.uploadProp.dataUpload)
         // if  (this.props.uploadProp.isLoading){
-          alert('berhasil upload...')
+          Alert.alert('berhasil upload...')
         // }
         // else if (this.props.uploadProp.isError){
         //   alert('gagal upload, coba lagi')

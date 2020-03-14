@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View,BackHandler } from 'react-native';
+import { View, BackHandler } from 'react-native';
 import {
     Container,
     Header,
@@ -28,7 +28,7 @@ import { getPengajuan } from '../publics/redux/actions/pengajuan';
 import { addKendaraanNasabah } from '../publics/redux/actions/kendaraan';
 import { addAngsuran } from '../publics/redux/actions/angsuran';
 
-class PengajuanStatus extends Component {
+class PengajuanStatus1 extends Component {
     constructor() {
         super();
         this.state = {
@@ -44,9 +44,9 @@ class PengajuanStatus extends Component {
             tipePekerjaan: '',
             angsuran: 0,
             marhunBih: 0,
-            lunas:false,
-            verifikasi:false,
-            status:''
+            lunas: false,
+            verifikasi: false,
+            status: ''
         };
     }
     static navigationOptions = ({ navigation }) => {
@@ -67,31 +67,39 @@ class PengajuanStatus extends Component {
     }
 
     componentDidMount = async () => {
-        BackHandler.addEventListener('hardwareBackPress', function() {
-            return true;
-        });
+        // BackHandler.addEventListener('hardwareBackPress', function() {
+        //     return true;
+        // });
         let user_id = await AsyncStorage.getItem("userId")
         await this.props.dispatch(getPengajuan(user_id))
+        let adaPengajuan = await this.props.pengajuanProp.dataPengajuanNasabah.length
         // console.warn(this.props.pengajuanProp.dataPengajuanNasabah)
-        this.props.pengajuanProp.dataPengajuanNasabah.map((item, i) => 
-        // console.warn(item.verifikasi)
-        this.setState({tipePekerjaan:item.jenis_pekerjaan,nama:item.nmnasabah
-        ,verifikasi:item.verifikasi
-        ,lunas:item.lunas
-        ,tenor:item.tenor
-        ,harga:item.harga
-        ,marhunBih:item.marhunbih
-        ,angsuran:item.angsuran
-        ,cabang:item.nmcabang
-        ,merkKendaraan:item.merk
-        ,tipeKendaraan:item.tipe
-        ,statusKendaraan:item.status
-        ,warnaKendaraan:item.warna})
-        )
-        if (this.state.lunas){
-            this.setState({status:'Lunas'})
-        }else{
-            this.setState({status:'Belum Lunas'})
+        if (adaPengajuan == 0) {
+            this.props.navigation.navigate('Pengajuan1')
+        }
+        else {
+            this.props.pengajuanProp.dataPengajuanNasabah.map((item, i) =>
+                // console.warn(item.verifikasi)
+                this.setState({
+                    tipePekerjaan: item.jenis_pekerjaan, nama: item.nmnasabah
+                    , verifikasi: item.verifikasi
+                    , lunas: item.lunas
+                    , tenor: item.tenor
+                    , harga: item.harga
+                    , marhunBih: item.marhunbih
+                    , angsuran: item.angsuran
+                    , cabang: item.nmcabang
+                    , merkKendaraan: item.merk
+                    , tipeKendaraan: item.tipe
+                    , statusKendaraan: item.status
+                    , warnaKendaraan: item.warna
+                })
+            )
+            if (this.state.lunas) {
+                this.setState({ status: 'Lunas' })
+            } else {
+                this.setState({ status: 'Belum Lunas' })
+            }
         }
     }
 
@@ -104,9 +112,9 @@ class PengajuanStatus extends Component {
                             <Label style={{ marginLeft: '1%', fontSize: 16 }}>Nama Nasabah</Label>
                             <Input style={{ color: "black", fontWeight: 'bold' }} editable={false} value={this.state.nama} />
                         </Item>
-                        <View style={{flexDirection:'row'}}>
-                        <Text style={{ marginLeft: '2%', fontWeight: 'bold' }}>Data Pengajuan </Text>
-                        <Text style={{color:this.state.verifikasi == true && this.state.lunas == true ? 'green' : 'red'}}>({this.state.verifikasi == true ? this.state.status : "Belum Disetujui"})</Text>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text style={{ marginLeft: '2%', fontWeight: 'bold' }}>Data Pengajuan </Text>
+                            <Text style={{ color: this.state.verifikasi == true && this.state.lunas == true ? 'green' : 'red' }}>({this.state.verifikasi == true ? this.state.status : "Belum Disetujui"})</Text>
                         </View>
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ flexDirection: 'column' }}>
@@ -154,7 +162,48 @@ class PengajuanStatus extends Component {
                                 </List>
                             </View>
                         </View>
-        <Text style={{ marginLeft: '2%', fontWeight: 'bold' }}>Lokasi Akad</Text>
+                        {/* <Text style={{ marginLeft: '2%', fontWeight: 'bold' }}>Total Uang Muka</Text>
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={{ flexDirection: 'column' }}>
+                                <List>
+                                    <ListItem style={{ alignSelf: 'flex-start' }}>
+                                        <Text style={{ color: 'grey' }}>Uang Muka</Text>
+                                    </ListItem> */}
+                                    {/* <ListItem style={{ alignSelf: 'flex-start' }}>
+                                        <Text style={{ color: 'grey' }}>Admin</Text>
+                                    </ListItem>
+                                    <ListItem style={{ alignSelf: 'flex-start' }}>
+                                        <Text style={{ color: 'grey' }}>Notaris</Text>
+                                    </ListItem>
+                                    <ListItem style={{ alignSelf: 'flex-start' }}>
+                                        <Text style={{ color: 'grey' }}>Asuransi</Text>
+                                    </ListItem>
+                                    <ListItem style={{ alignSelf: 'flex-start' }}>
+                                        <Text style={{ color: 'grey', alignSelf: 'flex-start' }}>Total</Text>
+                                    </ListItem> */}
+                                {/* </List>
+                            </View>
+                            <View style={{ marginLeft: '-10%', flexDirection: 'column' }}>
+                                <List>
+                                    <ListItem >
+                                        <NumberFormat value={3000000} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ color: "black", alignSelf: 'flex-end' }}>: {value}</Text>} />
+                                    </ListItem> */}
+                                    {/* <ListItem >
+                                        <NumberFormat value={3000000} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ color: "black", alignSelf: 'flex-end' }}>: {value}</Text>} />
+                                    </ListItem><ListItem >
+                                        <NumberFormat value={3000000} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ color: "black", alignSelf: 'flex-end' }}>: {value}</Text>} />
+                                    </ListItem>
+                                    <ListItem >
+                                        <NumberFormat value={3000000} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ color: "black", alignSelf: 'flex-end' }}>: {value}</Text>} />
+                                    </ListItem>
+                                    <ListItem >
+                                        <NumberFormat value={4000000} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ color: "black", alignSelf: 'flex-end' }}>: {value}</Text>} />
+                                    </ListItem> */}
+                                {/* </List>
+                            </View>
+                        </View> */}
+
+                        <Text style={{ marginBottom: '1%', marginTop: '1%', marginLeft: '2%', fontWeight: 'bold' }}>Lokasi Akad</Text>
                         <Text style={{ marginLeft: '5%', marginTop: '2%', color: 'grey' }}>{this.state.cabang}</Text>
                         {/* <View style={{ marginTop: '5%', marginBottom: '5%' }}>
                             <Button style={{ justifyContent: 'center', alignSelf: 'center', width: '90%' }} success onPress={() => this.addPengajuan()}>
@@ -174,4 +223,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(PengajuanStatus);
+export default connect(mapStateToProps)(PengajuanStatus1);
