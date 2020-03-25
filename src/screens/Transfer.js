@@ -30,7 +30,8 @@ class Transfer extends Component {
             no_va: '',
             namaBank: '',
             nomor_gcash: '',
-            pin:''
+            pin:'',
+            akhir:false
         };
     }
 
@@ -105,12 +106,14 @@ class Transfer extends Component {
             , amount: navigation.getParam('amount')
             , pengajuan_id: navigation.getParam('pengajuan_id')
             , nomor_hp: navigation.getParam('nomor_hp')
+            , akhir: navigation.getParam('akhir')
         })
     }
 
     pilihPembayaran = async () => {
         let userid = await AsyncStorage.getItem("userId")
         if (this.state.pembayaran == 'virtual') {
+            // console.warn(this.state.bank)
             await this.props.dispatch(bayarVa(
                 this.state.amount,
                 this.state.angsuran_id,
@@ -145,7 +148,9 @@ class Transfer extends Component {
                     nomor_gcash: this.state.nomor_gcash,
                     user_id: userid,
                     norekgcash: this.state.norekgcash,
-                    pin:this.state.pin
+                    pin:this.state.pin,
+                    akhir:this.state.akhir,
+                    pengajuan_id:this.state.pengajuan_id
                 })
             // await this.props.vaProp.dataJourney
             // console.warn(this.props.vaProp.dataVa)

@@ -1,5 +1,5 @@
 const initialState ={
-    dataJaminan: [],
+    dataHapusJaminan: [],
     isLoading: false,
     isFinish: false,
     isError: false,
@@ -28,6 +28,28 @@ export default jaminan = ( state = initialState, action) => {
             isLoading: false,
             isError: true
         }
+
+        case 'HAPUS_JAMINAN_PENDING':
+        return {
+            ...state,
+            isLoading: true
+        }
+
+        case 'HAPUS_JAMINAN_FULFILLED':
+        return {
+            ...state,
+            isLoading: false,
+            isFinish: true,
+            dataHapusJaminan: action.payload.data.values
+        }
+
+        case 'HAPUS_JAMINAN_REJECTED':
+        return {
+            ...state,
+            isLoading: false,
+            isError: true
+        }
+
 
         default:
             return state;

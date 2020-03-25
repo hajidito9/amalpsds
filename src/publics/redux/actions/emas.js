@@ -28,3 +28,12 @@ export const addDpEmas = (dptabemas_id, gram, persen, konversi, jumlahdp, diskon
         })
     }
 }
+
+export const hapusEmas = (dp_id) => {
+    return {
+        type: 'HAPUS_EMAS',
+        payload : axios.post(linkApi.ip+'dptabemas/hapus', {
+            dp_id:dp_id, 
+        })
+    }
+}

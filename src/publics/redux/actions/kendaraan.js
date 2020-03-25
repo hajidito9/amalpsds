@@ -68,3 +68,22 @@ export const addKendaraanNasabah = (kendaraan_id, merk_id, tipe, status, cc, war
         })
     }
 }
+
+export const inputBpkb = (pengajuan_id,bpkb) => {
+    return {
+        type: 'INPUT_BPKB',
+        payload : axios.post(linkApi.ip+'kendaraan/bpkb', {
+            pengajuan_id : pengajuan_id,
+            bpkb:bpkb 
+        })
+    }
+}
+
+export const hapusKendaraan = (pengajuan_id) => {
+    return {
+        type: 'HAPUS_KENDARAAN',
+        payload : axios.post(linkApi.ip+'kendaraan/nasabah/hapus', {
+            pengajuan_id:pengajuan_id, 
+        })
+    }
+}

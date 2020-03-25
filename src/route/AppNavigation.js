@@ -3,7 +3,17 @@ import { Text, View, Image, StyleSheet } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { createStackNavigator } from 'react-navigation-stack';
-import Home from '../screens/Home';
+import HomeNasabah from '../screens/Home';
+import HomeAdmin from '../screens/HomeAdmin';
+import inputBpkb from '../screens/inputBpkb';
+import DetailNasabahAdmin from '../screens/DetailNasabahAdmin';
+import DetailPengajuanNasabah from '../screens/DetailPengajuanNasabah';
+import DetailKendaraanAdmin from '../screens/DetailKendaraanAdmin';
+import DpNasabahCash from '../screens/DpNasabahCash';
+import DpNasabahJaminan from '../screens/DpNasabahJaminan';
+import DpNasabahTabEmas from '../screens/DpNasabahTabEmas';
+import MikroNasabah from '../screens/MikroNasabah';
+import PegawaiNasabah from '../screens/PegawaiNasabah';
 import HomeAmanah from '../screens/HomeAmanah';
 import Pembiayaan from '../screens/Pembiayaan';
 import TestMap from '../screens/TestMap';
@@ -183,7 +193,37 @@ const HomeStack = createStackNavigator({
     screen: Login
   },
   HomeDashboard: {
-    screen: Home
+    screen: HomeNasabah
+  },
+  HomeAdmin: {
+    screen: HomeAdmin
+  },
+  DetailNasabahAdmin:{
+    screen: DetailNasabahAdmin
+  },
+  DetailKendaraanAdmin:{
+    screen: DetailKendaraanAdmin
+  },
+  DpNasabahCash:{
+    screen: DpNasabahCash
+  },
+  DpNasabahJaminan:{
+    screen: DpNasabahJaminan
+  },
+  DpNasabahTabEmas:{
+    screen: DpNasabahTabEmas
+  },
+  MikroNasabah:{
+    screen: MikroNasabah
+  },
+  PegawaiNasabah:{
+    screen: PegawaiNasabah
+  },
+  DetailPengajuanNasabah:{
+    screen: DetailPengajuanNasabah
+  },
+  inputBpkb:{
+    screen: inputBpkb
   },
   Pembiayaan: {
     screen: Pembiayaan
@@ -197,7 +237,7 @@ const HomeStack = createStackNavigator({
 HomeStack.navigationOptions = ({ navigation }) => {
   let tabBarVisible = true;
   for (let i = 0; i < navigation.state.routes.length; i++) {
-    if (navigation.state.routes[i].routeName === "HomeDashboard" || navigation.state.routes[i].routeName === "Login") {
+    if (navigation.state.routes[i].routeName === "HomeDashboard" || navigation.state.routes[i].routeName === "Login" || navigation.state.routes[i].routeName === "HomeAdmin") {
       tabBarVisible = false;
     }
     if (navigation.state.routes[i].routeName === "HomeAmanah") {

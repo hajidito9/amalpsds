@@ -1,6 +1,7 @@
 const initialState = {
     dataEmas: [],
     dataDpEmas: [],
+    dataHapusDpEmas: [],
     dataKonversi: [],
     isLoading: false,
     isFinish: false,
@@ -76,6 +77,29 @@ export default emas = (state = initialState, action) => {
                 isError: true
             }
 
+            case 'HAPUS_EMAS_PENDING':
+            return {
+                ...state,
+                isLoading: true
+            }
+
+        case 'HAPUS_EMAS_FULFILLED':
+            // console.warn("data konversi: "+JSON.stringify(action.payload.data))
+            return {
+                ...state,
+                isLoading: false,
+                isFinish: true,
+                dataHapusDpEmas: action.payload.data.values
+            }
+
+        case 'HAPUS_EMAS_REJECTED':
+            return {
+                ...state,
+                isLoading: false,
+                isError: true
+            }
+
+            
         default:
             return state;
     }

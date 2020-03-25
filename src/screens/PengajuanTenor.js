@@ -27,7 +27,8 @@ class PengajuanTenor extends Component {
             selected1: undefined,
             selected2: undefined,
             selected3: undefined,
-            value: 0.1
+            value: 0.1,
+            kategoriKendaraan:''
         };
     }
 
@@ -70,7 +71,11 @@ class PengajuanTenor extends Component {
             },
         }
     }
-    render() {
+    componentDidMount= async () =>{
+        let kategoriKendaraan1 = await AsyncStorage.getItem("kategoriKendaraan")
+        this.setState({kategoriKendaraan:kategoriKendaraan1})
+    }
+    render () {
         // let category = navigation.getParam('category', 'category');
         return (
             // <View>
@@ -78,47 +83,50 @@ class PengajuanTenor extends Component {
                 <Content>
                     <List style={{ marginTop: '5%', marginBottom: '5%' }}>
                         <ListItem >
-                            <TouchableOpacity onPress={() => AsyncStorage.setItem("tenor",JSON.stringify(12)).then(this.props.navigation.navigate('Pengajuan1'))}>
+                            <TouchableOpacity onPress={() => AsyncStorage.setItem("tenor", JSON.stringify(12)).then(this.props.navigation.navigate('Pengajuan1'))}>
                                 <Left style={{ flexDirection: 'column' }}>
                                     <Text style={{ alignSelf: 'flex-start' }}>12 Bulan</Text>
                                 </Left>
                             </TouchableOpacity>
                         </ListItem>
                         <ListItem>
-                            <TouchableOpacity onPress={() => AsyncStorage.setItem("tenor",JSON.stringify(18)).then(this.props.navigation.navigate('Pengajuan1'))}>
+                            <TouchableOpacity onPress={() => AsyncStorage.setItem("tenor", JSON.stringify(18)).then(this.props.navigation.navigate('Pengajuan1'))}>
                                 <Left style={{ flexDirection: 'column' }}>
                                     <Text style={{ alignSelf: 'flex-start' }}>18 Bulan</Text>
                                 </Left>
                             </TouchableOpacity>
                         </ListItem>
                         <ListItem>
-                            <TouchableOpacity onPress={() => AsyncStorage.setItem("tenor",JSON.stringify(24)).then(this.props.navigation.navigate('Pengajuan1'))}>
+                            <TouchableOpacity onPress={() => AsyncStorage.setItem("tenor", JSON.stringify(24)).then(this.props.navigation.navigate('Pengajuan1'))}>
                                 <Left style={{ flexDirection: 'column' }}>
                                     <Text style={{ alignSelf: 'flex-start' }}>24 Bulan</Text>
                                 </Left>
                             </TouchableOpacity>
                         </ListItem>
                         <ListItem>
-                            <TouchableOpacity onPress={() => AsyncStorage.setItem("tenor",JSON.stringify(36)).then(this.props.navigation.navigate('Pengajuan1'))}>
+                            <TouchableOpacity onPress={() => AsyncStorage.setItem("tenor", JSON.stringify(36)).then(this.props.navigation.navigate('Pengajuan1'))}>
                                 <Left style={{ flexDirection: 'column' }}>
                                     <Text style={{ alignSelf: 'flex-start' }}>36 Bulan</Text>
                                 </Left>
                             </TouchableOpacity>
                         </ListItem>
-                        <ListItem>
-                            <TouchableOpacity onPress={() => AsyncStorage.setItem("tenor",JSON.stringify(48)).then(this.props.navigation.navigate('Pengajuan1'))}>
-                                <Left style={{ flexDirection: 'column' }}>
-                                    <Text style={{ alignSelf: 'flex-start' }}>48 Bulan</Text>
-                                </Left>
-                            </TouchableOpacity>
-                        </ListItem>
-                        <ListItem>
-                            <TouchableOpacity onPress={() => AsyncStorage.setItem("tenor",JSON.stringify(60)).then(this.props.navigation.navigate('Pengajuan1'))}>
-                                <Left style={{ flexDirection: 'column' }}>
-                                    <Text style={{ alignSelf: 'flex-start' }}>60 Bulan</Text>
-                                </Left>
-                            </TouchableOpacity>
-                        </ListItem>
+                        {this.state.kategoriKendaraan == 'Mobil' ?
+                            <List>
+                                <ListItem>
+                                    <TouchableOpacity onPress={() => AsyncStorage.setItem("tenor", JSON.stringify(48)).then(this.props.navigation.navigate('Pengajuan1'))}>
+                                        <Left style={{ flexDirection: 'column' }}>
+                                            <Text style={{ alignSelf: 'flex-start' }}>48 Bulan</Text>
+                                        </Left>
+                                    </TouchableOpacity>
+                                </ListItem>
+                                <ListItem>
+                                    <TouchableOpacity onPress={() => AsyncStorage.setItem("tenor", JSON.stringify(60)).then(this.props.navigation.navigate('Pengajuan1'))}>
+                                        <Left style={{ flexDirection: 'column' }}>
+                                            <Text style={{ alignSelf: 'flex-start' }}>60 Bulan</Text>
+                                        </Left>
+                                    </TouchableOpacity>
+                                </ListItem>
+                            </List> : <List></List>}
                     </List>
                 </Content>
             </Container>

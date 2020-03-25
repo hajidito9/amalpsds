@@ -28,21 +28,30 @@ export default class AuthLoading extends React.Component {
 
   _bootstrapAsync = async () => {
     let token = await AsyncStorage.getItem('userToken');
-    // console.warn("awal token: "+token)
-    this.props.navigation.navigate(token ? 'HomeDashboard' : 'Login');
+    let level = await AsyncStorage.getItem('userLevel');
+    // console.warn("awal lvel: "+level)
+    if (token != null && level === '1') {
+      this.props.navigation.navigate('HomeDashboard');
+    }
+    else if (token != null && level === '2') {
+      this.props.navigation.navigate('HomeAdmin');
+    }
+    else{
+      this.props.navigation.navigate('Login');
+    }
   };
 
   static navigationOptions = ({ navigation }) => ({
     headerVisible: false,
-    header: null
-    
-})
+    header: null,
+    // headerShown:false
+  })
 
   render() {
     return (
       <View>
-       <ActivityIndicator />
-       <StatusBar barStyle="light-content" backgroundColor="white" />
+        {/* <ActivityIndicator /> */}
+        <StatusBar barStyle="light-content" backgroundColor="white" />
       </View>
     );
   }

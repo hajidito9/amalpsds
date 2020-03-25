@@ -10,7 +10,7 @@ import {
   TextInput,
   FlatList,
   KeyboardAvoidingView,
-  StatusBar,
+  StatusBar, BackHandler
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Container, Header, Content, Item, Form, Input, Label, Button, Text, View } from 'native-base';
@@ -34,6 +34,12 @@ class LoginScreen extends Component {
     };
   }
 
+  componentDidMount = async () => {
+    BackHandler.addEventListener('hardwareBackPress', function () {
+      return true;
+    });
+  }
+
   onChangeTextUsername = username => this.setState({ username });
   onChangeTextPassword = password => this.setState({ password });
 
@@ -46,15 +52,22 @@ class LoginScreen extends Component {
     else {
       await AsyncStorage.setItem("userToken", this.props.loginProp.dataLogin.token);
       await AsyncStorage.setItem("userId", this.props.loginProp.dataLogin.id);
+      await AsyncStorage.setItem("userLevel", this.props.loginProp.dataLogin.level);
+      await AsyncStorage.setItem("namaNasabah", this.props.loginProp.dataLogin.nama);
       AsyncStorage.getItem("userToken", (error, result) => {
-       
+
         if (result) {
-          this.props.navigation.navigate('HomeDashboard');
-          // console.warn('userToken: '+result);
-          // alert(this.props.loginProp.dataLogin.message);
-        } 
+          AsyncStorage.getItem("userLevel", (error, result2) => {
+            if (result2 === '1') {
+              this.props.navigation.navigate('HomeDashboard');
+            }
+            else if (result2 === '2') {
+              this.props.navigation.navigate('HomeAdmin');
+            }
+          })
+        }
         // else {
-          // alert(this.props.loginProp.dataLogin.message);
+        // alert(this.props.loginProp.dataLogin.message);
         // }
       });
     }
@@ -112,7 +125,7 @@ class LoginScreen extends Component {
               />
             </Item>
           </Form>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('Pengajuan1')}>
+          <TouchableOpacity >
             <Text style={{ color: 'green', alignSelf: 'flex-end', marginTop: '5%', marginRight: '15%' }}> Lupa Kata Sandi?</Text>
           </TouchableOpacity>
           <Button
@@ -127,7 +140,7 @@ class LoginScreen extends Component {
           </Button>
           <View style={{ alignSelf: 'center', marginTop: '3%', flexDirection: 'row' }}>
             <Text >Belum punya akun?</Text>
-            <TouchableOpacity onPress={this.login}>
+            <TouchableOpacity >
               <Text style={{ color: 'green', fontWeight: 'bold' }}> DAFTAR</Text>
             </TouchableOpacity>
           </View>

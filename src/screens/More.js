@@ -24,7 +24,7 @@ export default class More extends Component {
 
   logOut = async () => {
     await AsyncStorage.clear();
-    this.props.navigation.navigate('AuthLoading')
+    this.props.navigation.navigate('Login')
   }
   render() {
     return (
@@ -33,7 +33,7 @@ export default class More extends Component {
             <Text style={{ fontWeight: 'bold', fontSize: 20, color:'grey' }} >More</Text>
         </View> */}
         <Content >
-          <ListItem icon style={{ marginTop: '5%' }}>
+          {/* <ListItem icon style={{ marginTop: '5%' }}>
             <Left>
               <Button style={{ backgroundColor: "grey" }} onPress={() => this.props.navigation.navigate('Profile')}>
                 <Icon1 style={{ color: 'white' }} name="user" />
@@ -49,8 +49,25 @@ export default class More extends Component {
                 <Icon name="arrow-forward" />
               </TouchableOpacity>
             </Right>
-          </ListItem>
+          </ListItem> */}
           <ListItem icon style={{ marginTop: '5%' }}>
+            <Left>
+              <Button style={{ backgroundColor: "green" }} onPress={() => this.props.navigation.navigate('HomeDashboard')}>
+                <Icon1 style={{ color: 'white' }} name="home" />
+              </Button>
+            </Left>
+            <Body>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('HomeDashboard')} >
+                <Text style={{ color: 'grey' }}>Beranda</Text>
+              </TouchableOpacity>
+            </Body>
+            <Right style={{ marginTop: '2%' }}>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('HomeDashboard')} >
+                <Icon name="arrow-forward" />
+              </TouchableOpacity>
+            </Right>
+          </ListItem>
+          {/* <ListItem icon style={{ marginTop: '5%' }}>
             <Left>
               <Button style={{ backgroundColor: "grey" }}>
                 <Icon1 style={{ color: 'white' }} name="question" />
@@ -75,16 +92,16 @@ export default class More extends Component {
             <Right style={{ marginTop: '2%' }}>
               <Icon name="arrow-forward" />
             </Right>
-          </ListItem>
+          </ListItem> */}
           <ListItem icon style={{ marginTop: '5%' }}>
             <Left>
-              <Button style={{ backgroundColor: "grey" }}>
+              <Button style={{ backgroundColor: "red" }}>
                 <Icon2 style={{ color: 'white' }} name="log-out" />
               </Button>
             </Left>
             <Body>
               <TouchableOpacity onPress={this.logOut}>
-                <Text style={{ color: 'grey' }}>Log Out</Text>
+                <Text style={{ color: 'grey' }}>Keluar</Text>
               </TouchableOpacity>
             </Body>
             <Right style={{ marginTop: '2%' }}>

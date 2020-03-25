@@ -5,6 +5,8 @@ const initialState = {
     dataDetailKendaraan: [],
     dataDetailMerk: [],
     dataKendaraanNasabah: [],
+    dataHapusKendaraanNasabah: [],
+    dataInputBpkb: [],
     isLoading: false,
     isFinish: false,
     isError: false,
@@ -193,6 +195,54 @@ export default kendaraan = (state = initialState, action) => {
                 isError: true
             }
 
+        case 'INPUT_BPKB_PENDING':
+            // console.log("data merk: "+action.payload.data)
+            return {
+                ...state,
+                isLoading: true
+            }
+
+        case 'INPUT_BPKB_FULFILLED':
+            // console.log("data merk: " + action.payload.data)
+            return {
+                ...state,
+                isLoading: false,
+                isFinish: true,
+                dataInputBpkb: action.payload.data.values
+            }
+
+        case 'INPUT_BPKB_REJECTED':
+            // console.log("data merk: " + action.payload.data)
+            return {
+                ...state,
+                isLoading: false,
+                isError: true
+            }
+
+            case 'HAPUS_KENDARAAN_PENDING':
+            // console.log("data merk: "+action.payload.data)
+            return {
+                ...state,
+                isLoading: true
+            }
+
+        case 'HAPUS_KENDARAAN_FULFILLED':
+            // console.log("data merk: " + action.payload.data)
+            return {
+                ...state,
+                isLoading: false,
+                isFinish: true,
+                dataHapusKendaraanNasabah: action.payload.data.values
+            }
+
+        case 'HAPUS_KENDARAAN_REJECTED':
+            // console.log("data merk: " + action.payload.data)
+            return {
+                ...state,
+                isLoading: false,
+                isError: true
+            }
+            
         default:
             return state;
     }

@@ -12,3 +12,12 @@ export const addDpCash = (cash_id, jumlahdp, persen, diskonmunah) => {
         })
     }
 }
+
+export const hapusCash = (dp_id) => {
+    return {
+        type: 'HAPUS_CASH',
+        payload : axios.post(linkApi.ip+'dpcash/hapus', {
+            dp_id:dp_id, 
+        })
+    }
+}

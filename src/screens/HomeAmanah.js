@@ -89,7 +89,8 @@ const images = [
 
 class HomeAmanah extends React.Component{
     static navigationOptions = {
-        header:null
+        header:null,
+        // headerShown:false
     }
     render(){
         return(

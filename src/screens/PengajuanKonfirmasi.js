@@ -121,6 +121,7 @@ class PengajuanKonfirmasi extends Component {
         }
         else if (jenisDp == "tabEmas") {
             let persen = parseFloat(await AsyncStorage.getItem("persenDpPengajuan")).toFixed(4)
+            console.warn(persen)
             let jumlahdp = await AsyncStorage.getItem("uangDp")
             let gram = parseFloat(await AsyncStorage.getItem("gramDp"))
             let konversi = await AsyncStorage.getItem("hargaEmasDp")
@@ -214,11 +215,12 @@ class PengajuanKonfirmasi extends Component {
         let angsuran = await AsyncStorage.getItem("angsuran")
         let verifikasi = false
         let lunas = false
-        let tgl_transaksi = new Date()
+        // let tgl_transaksi = new Date()
         let asTenor = await AsyncStorage.getItem("tenor")
         let pengajuan_id = uuid.v4().slice(24, 36)
 
-        await this.props.dispatch(addPengajuan(pengajuan_id, asIdCabang, marhunbih, angsuran, verifikasi, lunas, tgl_transaksi, asTenor, nasabah_id, jenisDp, dp_id, tipePekerjaan, pekerjaan_id))
+        // await this.props.dispatch(addPengajuan(pengajuan_id, asIdCabang, marhunbih, angsuran, verifikasi, lunas, tgl_transaksi, asTenor, nasabah_id, jenisDp, dp_id, tipePekerjaan, pekerjaan_id))
+        await this.props.dispatch(addPengajuan(pengajuan_id, asIdCabang, marhunbih, angsuran, verifikasi, lunas, asTenor, nasabah_id, jenisDp, dp_id, tipePekerjaan, pekerjaan_id, false))
 
         let asIdKendaraan = await AsyncStorage.getItem('idKendaraan')
         let merk_id = await AsyncStorage.getItem("idMerk")
@@ -232,9 +234,10 @@ class PengajuanKonfirmasi extends Component {
         await this.props.dispatch(addKendaraanNasabah(asIdKendaraan, merk_id, tipe, status, cc, warna, keterangan, harga, tahun, null, pengajuan_id))
 
         let statusAngsuran = "Belum Bayar"
+        alert('mengirim pengajuan...') 
         await this.props.dispatch(addAngsuran(pengajuan_id, statusAngsuran, angsuran, asTenor))
         alert('pengajuan tersimpan') 
-           this.props.navigation.navigate('PengajuanStatus')
+           this.props.navigation.navigate('PengajuanStatus1')
     }
 
     render() {
@@ -252,6 +255,9 @@ class PengajuanKonfirmasi extends Component {
                                 <List>
                                     <ListItem style={{ alignSelf: 'flex-start' }}>
                                         <Text style={{ color: 'grey' }}>Kendaraan</Text>
+                                    </ListItem>
+                                    <ListItem style={{ alignSelf: 'flex-start' }}>
+                                        <Text style={{ color: 'grey' }}>Status Kendaraan</Text>
                                     </ListItem>
                                     <ListItem style={{ alignSelf: 'flex-start' }}>
                                         <Text style={{ color: 'grey' }}>Tipe Nasabah</Text>
@@ -273,7 +279,10 @@ class PengajuanKonfirmasi extends Component {
                             <View style={{ marginLeft: '-10%', flexDirection: 'column' }}>
                                 <List>
                                     <ListItem >
-                                        <Text style={{ color: "black", alignSelf: 'flex-end' }}>: {this.state.merkKendaraan + ' ' + this.state.tipeKendaraan + ' ' + this.state.statusKendaraan + ' (' + this.state.warnaKendaraan + ')'}</Text>
+                                        <Text style={{ color: "black", alignSelf: 'flex-end', fontSize:13 }}>: {this.state.merkKendaraan + ' ' + this.state.tipeKendaraan + ' (' + this.state.warnaKendaraan + ')'}</Text>
+                                    </ListItem>
+                                    <ListItem >
+                                        <Text style={{ color: "black" }}>: {this.state.statusKendaraan}</Text>
                                     </ListItem>
                                     <ListItem >
                                         <Text style={{ color: "black" }}>: {this.state.tipePekerjaan}</Text>

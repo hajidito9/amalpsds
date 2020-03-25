@@ -13,7 +13,7 @@ import { Left, Icon, List, ListItem, Container, Content, Item } from 'native-bas
 import MapView, { Callout } from 'react-native-maps';
 import Polyline from '@mapbox/polyline';
 import { connect } from 'react-redux';
-import { getCabang, cariCabang } from '../publics/redux/actions/cabang';
+import { getCabang, cariCabang, cabangTerdekat } from '../publics/redux/actions/cabang';
 import AsyncStorage from '@react-native-community/async-storage';
 
 class pengajuanCabang extends Component {
@@ -23,13 +23,13 @@ class pengajuanCabang extends Component {
       users: [],
       avatar: '',
       region: {
-        latitude: 37.78825,
-        longitude: -122.4324,
+        latitude: -6.182626,
+        longitude: 106.778096,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       },
-      latitude: -6.270565,
-      longitude: 106.759550,
+      latitude: -6.182626,
+      longitude: 106.778096,
       latitudeCabang: -6.182628,
       longitudeCabang: 106.778098,
       error: null,
@@ -47,7 +47,7 @@ class pengajuanCabang extends Component {
 
   }
 
-  _refreshGPS = () => {
+  _refreshGPS = async() => {
     // this.setState({
     //   users: [],
     //   region: {
@@ -60,7 +60,7 @@ class pengajuanCabang extends Component {
     //   longitude: 106.759550,
     // })
 
-    navigator.geolocation.getCurrentPosition(
+    await navigator.geolocation.getCurrentPosition(
       (position) => {
         this.setState({
           region: {
@@ -78,6 +78,7 @@ class pengajuanCabang extends Component {
       (error) => this.setState({ error: error.message }),
       { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 },
     );
+    this.getCabangTerdekat(this.state.latitude,this.state.longitude)
   }
 
   mergeLot() {
@@ -94,6 +95,10 @@ class pengajuanCabang extends Component {
 
   getDataCabang = async () => {
     await this.props.dispatch(getCabang())
+  }
+
+  getCabangTerdekat = async (lat,long) => {
+    await this.props.dispatch(cabangTerdekat(lat,long))
   }
 
   pilihCabang = async () => {

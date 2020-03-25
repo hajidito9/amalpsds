@@ -3,9 +3,9 @@ import linkApi from './linkApi';
 
 export const bayarGcash = (amount,
     angsuran_id,
-    penyedia_layanan,
-    jenis_transaksi,
     nomor_gcash,
+    jenis_transaksi,
+    penyedia_layanan,
     user_id) => {
     return {
         type: 'POST_GCASH',

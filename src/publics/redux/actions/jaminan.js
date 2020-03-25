@@ -17,3 +17,12 @@ export const addJaminan = (jaminan_id, jenis, berat_kotor, berat_bersih, karat, 
         })
     }
 }
+
+export const hapusJaminan = (dp_id) => {
+    return {
+        type: 'HAPUS_JAMINAN',
+        payload : axios.post(linkApi.ip+'dpjaminan/hapus', {
+            dp_id:dp_id, 
+        })
+    }
+}

@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import NumberFormat from 'react-number-format';
 import AsyncStorage from '@react-native-community/async-storage';
 import moment from "moment";
+import { getPengajuan, hapusPengajuan } from '../publics/redux/actions/pengajuan';
 
 class Pembayaran extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -41,6 +42,9 @@ class Pembayaran extends Component {
       angsuranid: '',
       pengajuanid: '',
       nohp: '',
+      terakhir: 0,
+      akhir: false,
+      lunas: false
     };
   }
 
@@ -48,30 +52,47 @@ class Pembayaran extends Component {
     this.subs = [
       this.props.navigation.addListener('willFocus', async () => {
         let user_id = await AsyncStorage.getItem("userId")
-        await this.props.dispatch(getJourney(user_id))
-        // console.warn(this.props.journeyProp.dataJourney)
-        await this.props.journeyProp.dataJourney.map(async (item, i) =>
-          // console.warn(item.verifikasi)
-          await this.setState({
-            nonasabah: item.nonasabah
-            , nama: item.nama
-            , angsuran: item.angsuran
-            , jthTempo: moment(item.jatuhtempo).format('D MMMM YYYY')
-            , tagihanKe: item.tagihanke
-            , tipeDp: item.jenis_dp
-            , selisihHari: item.selisihhari
-            , angsuranid: item.angsuranid
-            , pengajuanid: item.pengajuan_id
-            , nohp: item.no_hp
-            // , denda : (((0.02 * item.angsuran)/30) * (this.state.today - item.jatuhtempo)).toFixed(0)
-          })
+        await this.props.dispatch(getPengajuan(user_id))
+        let adaPengajuan = await this.props.pengajuanProp.dataPengajuanNasabah.length
+        // console.warn(this.props.pengajuanProp.dataPengajuanNasabah)
+        this.props.pengajuanProp.dataPengajuanNasabah.map((item, i) =>
+          this.setState({ lunas: item.lunas })
         )
-        await this.setState({ denda: (((0.02 * this.state.angsuran) / 30) * (this.state.selisihHari)).toFixed(0) })
-        if (this.state.denda > 0) {
-          await this.setState({ total: (Number(this.state.angsuran) + Number(this.state.denda)) })
+        if (adaPengajuan > 0 && this.state.lunas == true) {
+          this.props.navigation.navigate('PengajuanStatus3')
         }
         else {
-          await this.setState({ total: Number(this.state.angsuran) })
+          // let user_id = await AsyncStorage.getItem("userId")
+          await this.props.dispatch(getJourney(user_id))
+          // console.warn(this.props.journeyProp.dataJourney)
+          await this.props.journeyProp.dataJourney.map(async (item, i) =>
+            // console.warn(item.verifikasi)
+            await this.setState({
+              nonasabah: item.nonasabah
+              , nama: item.nama
+              , angsuran: item.angsuran
+              , jthTempo: moment(item.jatuhtempo).format('D MMMM YYYY')
+              , tagihanKe: item.tagihanke
+              , tipeDp: item.jenis_dp
+              , selisihHari: item.selisihhari
+              , angsuranid: item.angsuranid
+              , pengajuanid: item.pengajuan_id
+              , nohp: item.no_hp
+              , terakhir: item.terakhir
+              // , denda : (((0.02 * item.angsuran)/30) * (this.state.today - item.jatuhtempo)).toFixed(0)
+            })
+          )
+          await this.setState({ denda: (((0.02 * this.state.angsuran) / 30) * (this.state.selisihHari)).toFixed(0) })
+          if (this.state.denda > 0) {
+            await this.setState({ total: (Number(this.state.angsuran) + Number(this.state.denda)) })
+          }
+          else {
+            await this.setState({ total: Number(this.state.angsuran) })
+          }
+
+          if (this.state.tagihanKe == this.state.terakhir) {
+            this.setState({ akhir: true })
+          }
         }
       }),
     ]
@@ -91,7 +112,8 @@ class Pembayaran extends Component {
         angsuran_id: this.state.angsuranid,
         pengajuan_id: this.state.pengajuanid,
         nomor_hp: this.state.nohp,
-        nasabah_id: this.state.nonasabah
+        nasabah_id: this.state.nonasabah,
+        akhir: this.state.akhir
       })
   }
 
@@ -191,6 +213,8 @@ class Pembayaran extends Component {
 const mapStateToProps = (state) => {
   return {
     journeyProp: state.journey,
+    nasabahProp: state.nasabah,
+    pengajuanProp: state.pengajuan,
   }
 }
 

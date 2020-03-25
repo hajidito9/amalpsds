@@ -26,3 +26,12 @@ export const addPegawai = (pegawai_id, nama_perusahaan, telp, status, jenis_peru
         })
     }
 }
+
+export const hapusPegawai = (pekerjaan_id) => {
+    return {
+        type: 'HAPUS_PEGAWAI',
+        payload : axios.post(linkApi.ip+'pegawai/hapus', {
+            pekerjaan_id:pekerjaan_id, 
+        })
+    }
+}

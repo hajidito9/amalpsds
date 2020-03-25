@@ -212,7 +212,7 @@ class PengajuanUangMuka extends Component {
     };
 
     buttonVisible() {
-        if (this.state.selectedIndex === 1 && (this.state.saldo < (this.state.harga * this.state.persenDp).toFixed(0))) {
+        if (this.state.selectedIndex === 1 && (this.state.saldo < (this.state.harga * this.state.persenDp))) {
             return (
                 <Button
                     disabled
@@ -222,7 +222,7 @@ class PengajuanUangMuka extends Component {
                 </Button>
             )
         }
-        else if (this.state.selectedIndex === 2 && (((this.state.kadar * this.state.konversiKarat * this.state.beratBersih) * 0.9).toFixed(0) < (this.state.harga * this.state.persenDp).toFixed(0))) {
+        else if (this.state.selectedIndex === 2 && (((this.state.kadar * this.state.konversiKarat * this.state.beratBersih) * 0.9) < (this.state.harga * this.state.persenDp))) {
             return (
                 <Button
                     disabled

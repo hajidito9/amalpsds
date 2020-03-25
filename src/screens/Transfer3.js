@@ -24,6 +24,7 @@ import { bayarGcash, getGcashBalance } from '../publics/redux/actions/gcash';
 import AsyncStorage from '@react-native-community/async-storage';
 import NumberFormat from 'react-number-format';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
+import { lunasPengajuan } from '../publics/redux/actions/pengajuan';
 
 class Transfer3 extends Component {
 
@@ -45,7 +46,10 @@ class Transfer3 extends Component {
             pin: '',
             norekgcash: '',
             saldo: 0,
-            pinInput: ''
+            pinInput: '',
+            password:'',
+            akhir: false,
+            pengajuan_id:''
         };
     }
 
@@ -101,7 +105,9 @@ class Transfer3 extends Component {
             penyedia_layanan: "PT Pegadaian Persero",
             jenis_transaksi: "Angsuran Amanah",
             pin: navigation.getParam('pin'),
-            norekgcash: navigation.getParam('norekgcash')
+            norekgcash: navigation.getParam('norekgcash'),
+            akhir: navigation.getParam('akhir'),
+            pengajuan_id: navigation.getParam('pengajuan_id')
         })
         // let userid = await AsyncStorage.getItem("userId")
         await this.props.dispatch(getGcashBalance(this.state.user_id, this.state.nomor_gcash))
@@ -113,16 +119,28 @@ class Transfer3 extends Component {
     }
 
     bayarGcash = async () => {
-        if (this.state.pinInput == this.state.pin) {
+        if (this.state.password == this.state.pin) {
             await this.props.dispatch(bayarGcash(
                 this.state.amount,
                 this.state.angsuran_id,
                 this.state.nomor_gcash,
-                this.state.user_id,
+                this.state.jenis_transaksi,
                 this.state.penyedia_layanan,
-                this.state.jenis_transaksi
+                this.state.user_id,
             ))
-            this.props.navigation.navigate('Pembayaran')
+            if (this.state.akhir == true) {
+                await this.props.dispatch(lunasPengajuan(this.state.pengajuan_id))
+                alert("selamat sudah lunas \npihak pegadaian akan menghubungi kamu")
+                this.props.navigation.popToTop()
+                // && 
+                this.props.navigation.navigate('Journey')
+            }
+            else {
+                Alert.alert("pembayaran berhasil")
+                this.props.navigation.popToTop()
+                // && 
+                this.props.navigation.navigate('Journey')
+            }
         }
         else {
             Alert.alert("pin salah")
@@ -136,7 +154,7 @@ class Transfer3 extends Component {
 
     render() {
         // let category = navigation.getParam('category', 'category');
-        const { pinInput } = this.state;
+        const { password } = this.state;
         return (
             // <View>
             <Container>
@@ -145,19 +163,23 @@ class Transfer3 extends Component {
                         <View style={{ flexDirection: 'column' }}>
                             <Text style={{ alignSelf: 'flex-start', fontSize: 13, color: 'black' }}>No Rekening</Text>
                             <Text style={{ alignSelf: 'flex-start', fontSize: 13, color: 'black' }}>Saldo</Text>
+                            <Text style={{ alignSelf: 'flex-start', fontSize: 13, color: 'black' }}>Biaya Angsuran</Text>
                         </View>
                         <View style={{ marginLeft: '15%', flexDirection: 'column' }}>
                             <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: 'green', fontWeight: 'bold' }}>{this.state.norekgcash}</Text>
                             <NumberFormat value={this.state.saldo} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: '#2ECC71', fontWeight: 'bold' }}>{value}</Text>} />
+                            <NumberFormat value={this.state.amount} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ alignSelf: 'flex-end', fontSize: 13, color: 'red', fontWeight: 'bold' }}>{value}</Text>} />
                         </View>
                     </View>
                     <View style={{ alignSelf: 'center', alignItems: 'center', marginTop: '5%' }}>
                         <Text>Masukkan Pin G-cash</Text>
-                        <SmoothPinCodeInput pinInput mask="x"
+                        <SmoothPinCodeInput
+                            password mask="﹡"
+                            maskDelay={0}
                             cellSize={36}
                             codeLength={6}
-                            value={pinInput}
-                            onTextChange={pinInput => this.setState({ pinInput })} />
+                            value={password }
+                            onTextChange={password => this.setState({ password })} />
                     </View>
                     <View style={{ alignSelf: 'center', marginTop: '5%', width: '33%', marginBottom: '3%' }}>
                         {this.state.saldo > this.state.amount ?

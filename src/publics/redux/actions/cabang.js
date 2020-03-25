@@ -14,3 +14,13 @@ export const cariCabang = (cari) => {
         payload : axios.get(linkApi.ip+'cabang/view/'+cari)
     }
 }
+
+export const cabangTerdekat = (lat,long) => {
+    return {
+        type: 'GET_CABANG',
+        payload : axios.post(linkApi.ip+'cabang/terdekat', {
+            lat:lat,
+            long:long 
+        })
+    }
+}

@@ -25,3 +25,12 @@ export const addMikro = (mikro_id, nama, bidang_usaha, lama_usaha, status_usaha,
         })
     }
 }
+
+export const hapusMikro = (pekerjaan_id) => {
+    return {
+        type: 'HAPUS_MIKRO',
+        payload : axios.post(linkApi.ip+'mikro/hapus', {
+            pekerjaan_id:pekerjaan_id, 
+        })
+    }
+}
