@@ -2,6 +2,13 @@ import * as React from 'react'
 import {View, Text, ScrollView, Dimensions, Image, StyleSheet, StatusBar, TouchableOpacity} from 'react-native'
 
 const DEVICE_WIDTH = Dimensions.get('window').width
+const Sound = require('react-native-sound')
+
+const sound = new Sound(require("../assets/intro.mp3"), Sound.MAIN_BUNDLE, (error) => {
+    if (error) {
+      console.warn(error)
+    }
+  })
 
 class BackgroundPromo extends React.Component{
     scrollRef = React.createRef()
@@ -23,11 +30,23 @@ class BackgroundPromo extends React.Component{
 
     }
 
+    // s = new Sound(require("../assets/intro.mp3"))
+        
+    playSound = () => {
+        sound.play((success) => {
+            if (!success) {
+              console.warn('Sound did not play')
+            }
+          })
+    }
+    
     render(){
+        
         const {images} = this.props
         const {selectedIndex} = this.state
         return(
             <View style={{height:"100%", width:"100%"}}>
+                {this.playSound()}
                 <StatusBar barStyle="light-content" backgroundColor="#004d4d" />
        
                 <ScrollView 

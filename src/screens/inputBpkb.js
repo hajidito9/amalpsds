@@ -41,13 +41,16 @@ class LoginScreen extends Component {
     super();
     this.state = {
       pengajuan_id:'',
-      bpkb:''
+      bpkb:'',
+      nasabah_id:''
     };
   }
 
   componentDidMount = async () => {
     let aspengajuan_id = await AsyncStorage.getItem("pengajuan_id")
     await this.setState({ pengajuan_id: aspengajuan_id })
+    let asnasabah_id = await AsyncStorage.getItem("nasabah_id")
+    await this.setState({ nasabah_id: asnasabah_id })
   }
 
   onChangeBpkb = bpkb => this.setState({ bpkb });
@@ -55,7 +58,7 @@ class LoginScreen extends Component {
   verifikasi = async () => {
     await this.props.dispatch(verifikasiPengajuan(this.state.pengajuan_id));
     await this.props.dispatch(inputBpkb(this.state.pengajuan_id,this.state.bpkb));
-    alert("Pengajuan dengan ID "+this.state.pengajuan_id+"\nBerhasil Disetujui")
+    alert("Pengajuan dengan ID nasabah: "+this.state.nasabah_id+"\nBerhasil Disetujui")
     this.props.navigation.navigate('HomeAdmin');
   };
 

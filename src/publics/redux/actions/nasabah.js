@@ -48,6 +48,16 @@ export const getDetailKendaraan = (nasabah_id) => {
     }
 }
 
+export const cariNasabah = (cari) => {
+    // console.warn(cari)
+    return {
+        type: 'GET_NASABAH',
+        payload : axios.post(linkApi.ip+'nasabah/cari', {
+            nasabah_id : cari, 
+        })
+    }
+}
+
 export const getDpCash = (nasabah_id) => {
     return {
         type: 'GET_DPCASH',

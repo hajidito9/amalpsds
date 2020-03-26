@@ -26,6 +26,16 @@ import NumberFormat from 'react-number-format';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import { lunasPengajuan } from '../publics/redux/actions/pengajuan';
 
+// import { NavigationActions } from 'react-navigation';
+
+// const resetToHome = NavigationActions.reset({
+//     index: 0,
+//     key: null,
+//     actions: [
+//       NavigationActions.navigate({routeName: 'PengajuanStatus3'}),
+//     ],
+//   });
+  
 class Transfer3 extends Component {
 
     constructor(props) {
@@ -118,6 +128,7 @@ class Transfer3 extends Component {
         )
     }
 
+    
     bayarGcash = async () => {
         if (this.state.password == this.state.pin) {
             await this.props.dispatch(bayarGcash(
@@ -130,15 +141,19 @@ class Transfer3 extends Component {
             ))
             if (this.state.akhir == true) {
                 await this.props.dispatch(lunasPengajuan(this.state.pengajuan_id))
+                // await this.props.navigation.popToTop()
+                // this.props.navigation.dispatch(resetToHome);
                 alert("selamat sudah lunas \npihak pegadaian akan menghubungi kamu")
-                this.props.navigation.popToTop()
-                // && 
+                this.props.navigation.navigate('Pembayaran')
+                && 
                 this.props.navigation.navigate('Journey')
             }
             else {
+                // await this.props.navigation.popToTop()
+                // this.props.navigation.dispatch(resetToHome);
                 Alert.alert("pembayaran berhasil")
-                this.props.navigation.popToTop()
-                // && 
+                this.props.navigation.navigate('Pembayaran')
+                && 
                 this.props.navigation.navigate('Journey')
             }
         }

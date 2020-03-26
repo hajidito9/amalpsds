@@ -13,7 +13,7 @@ import NumberFormat from 'react-number-format';
 import AsyncStorage from '@react-native-community/async-storage';
 import { getPengajuan } from '../publics/redux/actions/pengajuan';
 import { getGcashBalance } from '../publics/redux/actions/gcash';
-import { getGcash } from '../publics/redux/actions/gcash';
+import { getGcash, autodebet } from '../publics/redux/actions/gcash';
 
 class Journey extends Component {
   constructor(props) {
@@ -33,7 +33,7 @@ class Journey extends Component {
       user_id: '',
       saldo: 0,
       kategori: '',
-      lunas:false
+      lunas: false
     };
   }
 
@@ -63,15 +63,15 @@ class Journey extends Component {
   componentDidMount = async () => {
     this.subs = [
       this.props.navigation.addListener('willFocus', async () => {
-        
+
         let user_id = await AsyncStorage.getItem("userId")
         await this.props.dispatch(getPengajuan(user_id))
         let adaPengajuan = await this.props.pengajuanProp.dataPengajuanNasabah.length
         // console.warn(this.props.pengajuanProp.dataPengajuanNasabah)
         this.props.pengajuanProp.dataPengajuanNasabah.map((item, i) =>
-            this.setState({ verifikasi: item.verifikasi, lunas:item.lunas })
+          this.setState({ verifikasi: item.verifikasi, lunas: item.lunas })
         )
-        
+
         if (adaPengajuan > 0 && this.state.verifikasi == false) {
           this.props.navigation.navigate('PengajuanStatus2')
         }
@@ -79,33 +79,34 @@ class Journey extends Component {
           this.props.navigation.navigate('PengajuanStatus2')
         }
 
-        else{
+        else {
 
-        let user_id = await AsyncStorage.getItem("userId")
-        await this.props.dispatch(getJourney(user_id))
-        // console.warn(this.props.journeyProp.dataJourney)
-        await this.props.journeyProp.dataJourney.map((item, i) =>
-          // console.warn(item.verifikasi)
-          this.setState({
-            sekarang: item.sekarang
-            , sisabulan: item.sisabulan
-            , sisabayar: item.sisabayar
-            , sudahbayar: item.sudahbayar
-            , angsuran: item.angsuran
-            , tenor: item.tenor
-            , step: item.step
-            , kategori: item.kategori
-          })
-        )
-        let userid = await AsyncStorage.getItem("userId")
-        await this.props.dispatch(getGcash(userid))
-        await this.props.gcashProp.dataGcash.map(async (item, i) =>
-          this.setState({ nomor_gcash: item.nomor_gcash, user_id: userid })
-        )
-        await this.props.dispatch(getGcashBalance(this.state.user_id, this.state.nomor_gcash))
-        await this.props.gcashProp.dataGcashBalance.map(async (item, i) =>
-          this.setState({ saldo: item.balance })
-        )
+          let user_id = await AsyncStorage.getItem("userId")
+          await this.props.dispatch(getJourney(user_id))
+          // console.warn(this.props.journeyProp.dataJourney)
+          await this.props.journeyProp.dataJourney.map((item, i) =>
+            // console.warn(item.verifikasi)
+            this.setState({
+              sekarang: item.sekarang
+              , sisabulan: item.sisabulan
+              , sisabayar: item.sisabayar
+              , sudahbayar: item.sudahbayar
+              , angsuran: item.angsuran
+              , tenor: item.tenor
+              , step: item.step
+              , kategori: item.kategori
+            })
+          )
+          let userid = await AsyncStorage.getItem("userId")
+          await this.props.dispatch(getGcash(userid))
+          await this.props.gcashProp.dataGcash.map(async (item, i) =>
+            this.setState({ nomor_gcash: item.nomor_gcash, user_id: userid, toggled: item.autodebet == 1 ? true : false })
+          )
+          // console.warn(this.state.toggled)
+          await this.props.dispatch(getGcashBalance(this.state.user_id, this.state.nomor_gcash))
+          await this.props.gcashProp.dataGcashBalance.map(async (item, i) =>
+            this.setState({ saldo: item.balance })
+          )
         }
       }),
     ]
@@ -139,6 +140,19 @@ class Journey extends Component {
       return "teruuuuss pepeeet, kamuu hampiir finish"
     }
   }
+
+  autodebet = async (value) => {
+    // console.warn(value)
+    await this.props.dispatch(autodebet(this.state.nomor_gcash, value))
+    this.setState({ toggled: value })
+    if (value == true) {
+      alert('autodebet aktif')
+    }
+    else {
+      alert('autodebet tidak aktif')
+    }
+  }
+
   render() {
     // let step= (this.state.sekarang / this.state.tenor).toFixed(2)
     return (
@@ -205,10 +219,10 @@ class Journey extends Component {
             </View>
             <View style={{ marginTop: '10%', alignItems: 'center', marginBottom: '5%' }}>
               <View style={{ flexDirection: 'row' }}>
-              <Image
-                      source={require('../assets/logop.png')}
-                      style={{ marginRight:'5%', width: 50, height: 50, }} />
-                    <View style={{ flexDirection: 'column' }}>
+                <Image
+                  source={require('../assets/logop.png')}
+                  style={{ marginRight: '5%', width: 50, height: 50, }} />
+                <View style={{ flexDirection: 'column' }}>
                   {/* <Text style={{ fontWeight: 'bold', color: 'grey', fontSize: 17 }}> Rp. 650,000</Text> */}
                   <NumberFormat value={this.state.saldo} displayType={'text'} thousandSeparator={true} prefix={'Rp'} renderText={value => <Text style={{ fontWeight: 'bold', color: '#2ECC71', fontSize: 17 }}>{value}</Text>} />
                   {/* <TouchableOpacity onPress={() => this.props.navigation.navigate('Transfer')}> */}
@@ -217,8 +231,8 @@ class Journey extends Component {
                 </View>
                 <View style={{ marginLeft: '10%', alignItems: 'center', flexDirection: 'column' }}>
                   <Switch
-                    onValueChange={(value) => this.setState({ toggled: value })}
                     value={this.state.toggled}
+                    onValueChange={value => this.autodebet(value)}
                   />
                   <Text style={{ color: 'grey', fontSize: 15 }}>Auto Debet</Text>
                 </View>

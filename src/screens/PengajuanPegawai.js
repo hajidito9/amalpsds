@@ -112,23 +112,38 @@ export default class PengajuanPegawai extends Component {
   ubahKodePos = kodePos => this.setState({ kodePos });
 
   inputDataPegawai = async () => {
-    await AsyncStorage.setItem("pegawaiNama", this.state.nama)
-    await AsyncStorage.setItem("pegawaiTelp", this.state.telp)
-    await AsyncStorage.setItem("pegawaiStatus", this.state.status)
-    // console.warn(this.state.status)
-    await AsyncStorage.setItem("pegawaiJenis", this.state.jenis)
-    // console.warn(this.state.jenis)
-    await AsyncStorage.setItem("pegawaiPensiunDb", JSON.stringify(moment(this.state.pensiun).add(1, 'day')).substr(1, 10))
-    // console.warn(JSON.stringify(this.state.pensiun).substr(1, 10))
-    await AsyncStorage.setItem("pegawaiPensiun", this.state.pensiun.toString().substr(0, 15))
-    await AsyncStorage.setItem("pegawaiLamaKerja", this.state.lamaKerja)
-    await AsyncStorage.setItem("pegawaiAlamat", this.state.alamat)
-    await AsyncStorage.setItem("pegawaiProvinsi", this.state.provinsi)
-    await AsyncStorage.setItem("pegawaiKota", this.state.kota)
-    await AsyncStorage.setItem("pegawaiKecamatan", this.state.kecamatan)
-    await AsyncStorage.setItem("pegawaiKelurahan", this.state.kelurahan)
-    await AsyncStorage.setItem("pegawaiKodePos", this.state.kodePos)
-    this.props.navigation.navigate('PengajuanFilePegawai')
+    if (
+      this.state.nama == '' ||
+      this.state.telp == '' ||
+      this.state.pensiun == new Date() ||
+      this.state.lamaKerja == 0 ||
+      this.state.alamat == '' ||
+      this.state.provinsi == '' ||
+      this.state.kota == '' ||
+      this.state.kecamatan == '' ||
+      this.state.kelurahan == '' ||
+      this.state.kodePos == '') {
+      alert('data harus terisi semua...')
+    }
+    else {
+      await AsyncStorage.setItem("pegawaiNama", this.state.nama)
+      await AsyncStorage.setItem("pegawaiTelp", this.state.telp)
+      await AsyncStorage.setItem("pegawaiStatus", this.state.status)
+      // console.warn(this.state.status)
+      await AsyncStorage.setItem("pegawaiJenis", this.state.jenis)
+      // console.warn(this.state.jenis)
+      await AsyncStorage.setItem("pegawaiPensiunDb", JSON.stringify(moment(this.state.pensiun).add(1, 'day')).substr(1, 10))
+      // console.warn(JSON.stringify(this.state.pensiun).substr(1, 10))
+      await AsyncStorage.setItem("pegawaiPensiun", this.state.pensiun.toString().substr(0, 15))
+      await AsyncStorage.setItem("pegawaiLamaKerja", this.state.lamaKerja)
+      await AsyncStorage.setItem("pegawaiAlamat", this.state.alamat)
+      await AsyncStorage.setItem("pegawaiProvinsi", this.state.provinsi)
+      await AsyncStorage.setItem("pegawaiKota", this.state.kota)
+      await AsyncStorage.setItem("pegawaiKecamatan", this.state.kecamatan)
+      await AsyncStorage.setItem("pegawaiKelurahan", this.state.kelurahan)
+      await AsyncStorage.setItem("pegawaiKodePos", this.state.kodePos)
+      this.props.navigation.navigate('PengajuanFilePegawai')
+    }
   }
 
   componentDidMount = async () => {
@@ -213,11 +228,11 @@ export default class PengajuanPegawai extends Component {
             <Form>
               <Item stackedLabel>
                 <Label style={{ fontWeight: 'bold', color: 'black' }}>Nama Perusahaan</Label>
-                <Input onChangeText={this.ubahNama} placeholderTextColor="grey" style={{ color:'grey' }} value={this.state.nama} />
+                <Input onChangeText={this.ubahNama} placeholderTextColor="grey" style={{ color: 'grey' }} value={this.state.nama} />
               </Item>
               <Item stackedLabel>
                 <Label style={{ fontWeight: 'bold', color: 'black' }}>Nomor Telepon Perusahaan</Label>
-                <Input onChangeText={this.ubahTelp} placeholderTextColor="grey" style={{ color:'grey' }} value={this.state.telp} keyboardType="numeric" />
+                <Input onChangeText={this.ubahTelp} placeholderTextColor="grey" style={{ color: 'grey' }} value={this.state.telp} keyboardType="numeric" />
               </Item>
               <Item stackedLabel>
                 <Label style={{ fontWeight: 'bold', color: 'black' }}>Status Pegawai</Label>
@@ -261,7 +276,7 @@ export default class PengajuanPegawai extends Component {
               </Item>
               <Item stackedLabel>
                 <Label style={{ fontWeight: 'bold', color: 'black' }}>Alamat Perusahaan</Label>
-                <Input onChangeText={this.ubahAlamat} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.alamat}/>
+                <Input onChangeText={this.ubahAlamat} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.alamat} />
               </Item>
               <Item stackedLabel>
                 <Label style={{ fontWeight: 'bold', color: 'black' }}>Provinsi</Label>
@@ -269,19 +284,19 @@ export default class PengajuanPegawai extends Component {
               </Item>
               <Item stackedLabel>
                 <Label style={{ fontWeight: 'bold', color: 'black' }}>Kota</Label>
-                <Input onChangeText={this.ubahKota} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.kota}/>
+                <Input onChangeText={this.ubahKota} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.kota} />
               </Item>
               <Item stackedLabel>
                 <Label style={{ fontWeight: 'bold', color: 'black' }}>Kecamatan</Label>
-                <Input onChangeText={this.ubahKecamatan} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.kecamatan}/>
+                <Input onChangeText={this.ubahKecamatan} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.kecamatan} />
               </Item>
               <Item stackedLabel>
                 <Label style={{ fontWeight: 'bold', color: 'black' }}>Kelurahan</Label>
-                <Input onChangeText={this.ubahKelurahan} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.kelurahan}/>
+                <Input onChangeText={this.ubahKelurahan} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.kelurahan} />
               </Item>
               <Item stackedLabel>
                 <Label style={{ fontWeight: 'bold', color: 'black' }}>Kode Pos</Label>
-                <Input onChangeText={this.ubahKodePos} placeholderTextColor="grey" style={{ color: "grey" }} keyboardType="numeric" value={this.state.kodePos}/>
+                <Input onChangeText={this.ubahKodePos} placeholderTextColor="grey" style={{ color: "grey" }} keyboardType="numeric" value={this.state.kodePos} />
               </Item>
               <View style={{ marginTop: '5%', marginBottom: '5%' }}>
                 <Button style={{ justifyContent: 'center', alignSelf: 'center', width: '90%' }} success onPress={() => this.inputDataPegawai()}>

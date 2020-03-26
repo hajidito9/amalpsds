@@ -33,6 +33,16 @@ export const getGcashBalance = (
     }
 }
 
+export const autodebet = (nomor_gcash, value) => {
+    return {
+        type: 'AUTODEBET',
+        payload : axios.put(linkApi.ip+'pembayaran/autodebet', {
+            nomor_gcash : nomor_gcash,
+            value:value 
+        })
+    }
+}
+
 export const getGcash = (user_id) => {
     return {
         type: 'GET_GCASH',

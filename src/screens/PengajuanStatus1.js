@@ -211,6 +211,7 @@ class PengajuanStatus1 extends Component {
     }
 
     pengajuanBaru = async () => {
+        alert('menghapus pengajuan sebelumnya...')
         await this.props.dispatch(hapusAngsuran(this.state.pengajuan_id))
         await this.props.dispatch(hapusNasabah(this.state.nasabah_id))
         await this.props.dispatch(hapusPengajuan(this.state.pengajuan_id))

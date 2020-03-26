@@ -81,24 +81,43 @@ export default class PengajuanNasabah extends Component {
   ubahNamaIbu = namaIbu => this.setState({ namaIbu });
 
   inputDataNasabah = async () => {
-    await AsyncStorage.setItem("nasabahNama", this.state.nama)
-    await AsyncStorage.setItem("nasabahKtp", this.state.noKtp)
-    await AsyncStorage.setItem("nasabahHp", this.state.noHp)
-    await AsyncStorage.setItem("nasabahEmail", this.state.email)
-    await AsyncStorage.setItem("nasabahJk", this.state.jenisKelamin)
-    await AsyncStorage.setItem("nasabahTl", this.state.tempatLahir)
-    await AsyncStorage.setItem("nasabahTglLhrDb", JSON.stringify(moment(this.state.tglLahir).add(1, 'day')).substr(1, 10))
-    await AsyncStorage.setItem("nasabahTglLhr", this.state.tglLahir.toString().substr(0, 15))
-    // await AsyncStorage.setItem("nasabahTglLhrDb", this.state.tglLahir.toString().substr(0, 15))
-    // await AsyncStorage.setItem("nasabahTglLhr", JSON.stringify(this.state.tglLahir))
-    await AsyncStorage.setItem("nasabahAlamat", this.state.alamat)
-    await AsyncStorage.setItem("nasabahProvinsi", this.state.provinsi)
-    await AsyncStorage.setItem("nasabahKota", this.state.kota)
-    await AsyncStorage.setItem("nasabahKecamatan", this.state.kecamatan)
-    await AsyncStorage.setItem("nasabahKelurahan", this.state.kelurahan)
-    await AsyncStorage.setItem("nasabahStatus", this.state.status)
-    await AsyncStorage.setItem("nasabahNmIbu", this.state.namaIbu)
-    this.props.navigation.navigate('PengajuanTipePekerjaan')
+    if (
+      this.state.jenisKelamin == '' ||
+      this.state.nama == '' ||
+      this.state.tempatLahir == '' ||
+      this.state.tglLahir == new Date() ||
+      this.state.email == '' ||
+      this.state.noHp == '' ||
+      this.state.alamat == '' ||
+      this.state.provinsi == '' ||
+      this.state.kota == '' ||
+      this.state.kecamatan == '' ||
+      this.state.kelurahan == '' ||
+      this.state.status == '' ||
+      this.state.namaIbu == '' ||
+      this.state.noKtp == '') {
+      alert('data harus terisi semua...')
+    }
+    else {
+      await AsyncStorage.setItem("nasabahNama", this.state.nama)
+      await AsyncStorage.setItem("nasabahKtp", this.state.noKtp)
+      await AsyncStorage.setItem("nasabahHp", this.state.noHp)
+      await AsyncStorage.setItem("nasabahEmail", this.state.email)
+      await AsyncStorage.setItem("nasabahJk", this.state.jenisKelamin)
+      await AsyncStorage.setItem("nasabahTl", this.state.tempatLahir)
+      await AsyncStorage.setItem("nasabahTglLhrDb", JSON.stringify(moment(this.state.tglLahir).add(1, 'day')).substr(1, 10))
+      await AsyncStorage.setItem("nasabahTglLhr", this.state.tglLahir.toString().substr(0, 15))
+      // await AsyncStorage.setItem("nasabahTglLhrDb", this.state.tglLahir.toString().substr(0, 15))
+      // await AsyncStorage.setItem("nasabahTglLhr", JSON.stringify(this.state.tglLahir))
+      await AsyncStorage.setItem("nasabahAlamat", this.state.alamat)
+      await AsyncStorage.setItem("nasabahProvinsi", this.state.provinsi)
+      await AsyncStorage.setItem("nasabahKota", this.state.kota)
+      await AsyncStorage.setItem("nasabahKecamatan", this.state.kecamatan)
+      await AsyncStorage.setItem("nasabahKelurahan", this.state.kelurahan)
+      await AsyncStorage.setItem("nasabahStatus", this.state.status)
+      await AsyncStorage.setItem("nasabahNmIbu", this.state.namaIbu)
+      this.props.navigation.navigate('PengajuanTipePekerjaan')
+    }
   }
 
   componentDidMount = async () => {
@@ -150,19 +169,19 @@ export default class PengajuanNasabah extends Component {
           <View >
             <Form>
               <Item stackedLabel>
-                <Label style={{fontWeight:'bold'}}>No KTP</Label>
+                <Label style={{ fontWeight: 'bold' }}>No KTP</Label>
                 <Input onChangeText={this.ubahKtp} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.noKtp} keyboardType="numeric" />
               </Item>
               <Item stackedLabel>
-                <Label style={{fontWeight:'bold'}}>Nama</Label>
-                <Input onChangeText={this.ubahNama} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.nama}/>
+                <Label style={{ fontWeight: 'bold' }}>Nama</Label>
+                <Input onChangeText={this.ubahNama} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.nama} />
               </Item>
               <Item stackedLabel>
-                <Label style={{fontWeight:'bold'}}>Tempat Lahir</Label>
-                <Input onChangeText={this.ubahTempatLahir} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.tempatLahir}/>
+                <Label style={{ fontWeight: 'bold' }}>Tempat Lahir</Label>
+                <Input onChangeText={this.ubahTempatLahir} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.tempatLahir} />
               </Item>
               <Item stackedLabel>
-                <Label style={{fontWeight:'bold'}}>Tanggal Lahir</Label>
+                <Label style={{ fontWeight: 'bold' }}>Tanggal Lahir</Label>
                 <DatePicker
                   defaultDate={new Date(2018, 4, 4)}
                   minimumDate={new Date(1880, 1, 1)}
@@ -179,7 +198,7 @@ export default class PengajuanNasabah extends Component {
                   // value={this.state.tglLahir}
                   disabled={false}
                 />
-                <Text>{this.state.tglLahir != '' ? this.state.tglLahir.toString().substr(3,12) : ''}</Text>
+                <Text>{this.state.tglLahir != '' ? this.state.tglLahir.toString().substr(3, 12) : ''}</Text>
                 {/* <Text>DB: {this.state.tglLahirDb != '' ? this.state.tglLahirDb : ''}</Text> */}
               </Item>
               {/* <Item stackedLabel> */}
@@ -227,36 +246,36 @@ export default class PengajuanNasabah extends Component {
               </Picker>
               {/* </Item> */}
               <Item stackedLabel>
-                <Label style={{fontWeight:'bold'}}>Nama Ibu</Label>
-                <Input onChangeText={this.ubahNamaIbu} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.namaIbu}/>
+                <Label style={{ fontWeight: 'bold' }}>Nama Ibu</Label>
+                <Input onChangeText={this.ubahNamaIbu} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.namaIbu} />
               </Item>
               <Item stackedLabel>
-                <Label style={{fontWeight:'bold'}}>Alamat</Label>
-                <Input onChangeText={this.ubahAlamat} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.alamat}/>
+                <Label style={{ fontWeight: 'bold' }}>Alamat</Label>
+                <Input onChangeText={this.ubahAlamat} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.alamat} />
               </Item>
               <Item stackedLabel>
-                <Label style={{fontWeight:'bold'}}>Provinsi</Label>
-                <Input onChangeText={this.ubahProvinsi} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.provinsi}/>
+                <Label style={{ fontWeight: 'bold' }}>Provinsi</Label>
+                <Input onChangeText={this.ubahProvinsi} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.provinsi} />
               </Item>
               <Item stackedLabel>
-                <Label style={{fontWeight:'bold'}}>Kota</Label>
-                <Input onChangeText={this.ubahKota} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.kota}/>
+                <Label style={{ fontWeight: 'bold' }}>Kota</Label>
+                <Input onChangeText={this.ubahKota} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.kota} />
               </Item>
               <Item stackedLabel>
-                <Label style={{fontWeight:'bold'}}>Kecamatan</Label>
-                <Input onChangeText={this.ubahKecamatan} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.kecamatan}/>
+                <Label style={{ fontWeight: 'bold' }}>Kecamatan</Label>
+                <Input onChangeText={this.ubahKecamatan} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.kecamatan} />
               </Item>
               <Item stackedLabel>
-                <Label style={{fontWeight:'bold'}}>Kelurahan</Label>
-                <Input onChangeText={this.ubahKelurahan} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.kelurahan}/>
+                <Label style={{ fontWeight: 'bold' }}>Kelurahan</Label>
+                <Input onChangeText={this.ubahKelurahan} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.kelurahan} />
               </Item>
               <Item stackedLabel>
-                <Label style={{fontWeight:'bold'}}>Email</Label>
-                <Input onChangeText={this.ubahEmail} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.email}/>
+                <Label style={{ fontWeight: 'bold' }}>Email</Label>
+                <Input onChangeText={this.ubahEmail} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.email} />
               </Item>
               <Item stackedLabel>
-                <Label style={{fontWeight:'bold'}}>Nomer HP</Label>
-                <Input onChangeText={this.ubahNoHp} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.noHp} keyboardType="numeric"/>
+                <Label style={{ fontWeight: 'bold' }}>Nomer HP</Label>
+                <Input onChangeText={this.ubahNoHp} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.noHp} keyboardType="numeric" />
               </Item>
               <View style={{ marginTop: '5%', marginBottom: '5%' }}>
                 <Button style={{ justifyContent: 'center', alignSelf: 'center', width: '90%' }} success onPress={() => this.inputDataNasabah()}>

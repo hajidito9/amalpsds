@@ -18,7 +18,7 @@ import {
 
 import Icon2 from 'react-native-vector-icons/dist/FontAwesome5';
 import { connect } from 'react-redux';
-import { getNasabah } from '../publics/redux/actions/nasabah';
+import { getNasabah, cariNasabah } from '../publics/redux/actions/nasabah';
 import AsyncStorage from '@react-native-community/async-storage';
 
 class HomeAdmin extends Component {
@@ -119,8 +119,9 @@ class HomeAdmin extends Component {
 
     ubahCari = cari => this.setState({ cari });
 
-    cari = async (kategoriKendaraan, cari) => {
-        await this.props.dispatch(cariMerk(kategoriKendaraan, cari))
+    cari = async (cari) => {
+        // console.warn(cari)
+        await this.props.dispatch(cariNasabah(cari))
     }
 
     render() {
@@ -136,11 +137,11 @@ class HomeAdmin extends Component {
                             marginLeft: '5%',
                             borderColor: 'black',
                         }}>
-                            <TouchableOpacity onPress={() => this.cari(this.state.kategoriKendaraan, this.state.cari)}>
+                            <TouchableOpacity onPress={() => this.cari(this.state.cari)}>
                                 <Icon style={{ color: 'grey', fontSize: 20 }} name='ios-search' />
                             </TouchableOpacity>
                             <TextInput
-                                placeholder="Cari"
+                                placeholder="Cari melalui ID"
                                 placeholderTextColor='grey'
                                 style={{
                                     fontSize: 16,

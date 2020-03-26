@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { TouchableOpacity,View, FlatList, Image, StatusBar, List, TextInput, ScrollView, Dimensions } from 'react-native'
 import {  CardItem, Footer, FooterTab, Layout, Body, Card, Left, Thumbnail, Right, Text, Button, Container, Picker, Content, Form, Item, Icon, Label, ListItem } from 'native-base'
+const Sound = require('react-native-sound')
 
 class Pembiayaan extends Component {
     constructor(props) {
@@ -17,6 +18,21 @@ class Pembiayaan extends Component {
         }
     }
 
+    // sound = new Sound('intro.mp3');
+    sound = new Sound(require("../assets/intro.mp3"), Sound.MAIN_BUNDLE, (error) => {
+        if (error) {
+          console.warn(error)
+        }
+      })
+
+    playSound = () => {
+        this.sound.play((success) => {
+            if (!success) {
+              console.warn('Sound did not play')
+            }
+          })
+    }
+
     static navigationOptions = ({ navigation }) => ({
         headerTitle: 'Pembiayaan',
         headerTitleStyle: {
@@ -29,6 +45,10 @@ class Pembiayaan extends Component {
             backgroundColor: 'white'
         }
     })
+
+    goTo = async(link) =>{
+        await this.playSound && this.props.navigation.navigate(link)
+    }
 
     render() {
         return (
@@ -70,7 +90,7 @@ class Pembiayaan extends Component {
                                     }}
                                 >
                                     <TouchableOpacity
-                                        onPress={() => this.props.navigation.navigate(item.link)}>
+                                        onPress={() =>  this.goTo(item.link)}>
                                         <Image
                                             style={{
                                                 height:80,

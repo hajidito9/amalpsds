@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import NumberFormat from 'react-number-format';
 import { getEmas, getKonversiEmas } from '../publics/redux/actions/emas';
+// import BgAudio from 'react-native-background-audio'
 
 class Home extends Component {
     constructor(props) {
@@ -124,9 +125,11 @@ class Home extends Component {
     }
 
     render() {
+    
         return (
             <Container>
-                <StatusBar barStyle="light-content" backgroundColor="#004d4d" />
+            {/* <BgAudio options={audio_options}></BgAudio>     */}
+            <StatusBar barStyle="light-content" backgroundColor="#004d4d" />
                 <View style={{
                     flex: 1,
                     backgroundColor: '#e8eaed'
@@ -256,6 +259,10 @@ class Home extends Component {
         )
     }
 }
+
+// const audio_options = {
+//     source:{local: require('../assets/intro.mp3')}  //ex. require('./music/sample.mp3')
+// }
 
 const mapStateToProps = (state) => {
     return {

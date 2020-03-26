@@ -24,7 +24,7 @@ export default class PengajuanMikro extends Component {
       backgroundDagang: true,
       backgroundIndustri: false,
       backgroundJasa: false,
-      bidang:'Dagang',
+      bidang: 'Dagang',
       nama: '',
       telp: '',
       lamaUsaha: 0,
@@ -97,20 +97,38 @@ export default class PengajuanMikro extends Component {
   ubahKodePos = kodePos => this.setState({ kodePos });
 
   inputDataMikro = async () => {
-    await AsyncStorage.setItem("mikroNama", this.state.nama)
-    await AsyncStorage.setItem("mikroTelp", this.state.telp)
-    await AsyncStorage.setItem("mikroLamaUsaha", this.state.lamaUsaha)
-    await AsyncStorage.setItem("mikroStatus", this.state.status)
-    await AsyncStorage.setItem("mikroJarak", this.state.jarak)
-    await AsyncStorage.setItem("mikroJenis", this.state.jenis)
-    await AsyncStorage.setItem("mikroAlamat", this.state.alamat)
-    await AsyncStorage.setItem("mikroProvinsi", this.state.provinsi)
-    await AsyncStorage.setItem("mikroKota", this.state.kota)
-    await AsyncStorage.setItem("mikroKecamatan", this.state.kecamatan)
-    await AsyncStorage.setItem("mikroKelurahan", this.state.kelurahan)
-    await AsyncStorage.setItem("mikroKodePos", this.state.kodePos)
-    await AsyncStorage.setItem("mikroBidang", this.state.bidang)
-    this.props.navigation.navigate('PengajuanFileMikro')
+    if (
+      this.state.nama == '' ||
+      this.state.telp == '' ||
+      this.state.lamaUsaha == 0 ||
+      this.state.status == '' ||
+      this.state.jarak == 0 ||
+      this.state.jenis == '' ||
+      this.state.alamat == '' ||
+      this.state.provinsi == '' ||
+      this.state.kota == '' ||
+      this.state.kecamatan == '' ||
+      this.state.kelurahan == '' ||
+      this.state.kodePos == ''
+    ) {
+      alert('data harus terisi semua...')
+    }
+    else {
+      await AsyncStorage.setItem("mikroNama", this.state.nama)
+      await AsyncStorage.setItem("mikroTelp", this.state.telp)
+      await AsyncStorage.setItem("mikroLamaUsaha", this.state.lamaUsaha)
+      await AsyncStorage.setItem("mikroStatus", this.state.status)
+      await AsyncStorage.setItem("mikroJarak", this.state.jarak)
+      await AsyncStorage.setItem("mikroJenis", this.state.jenis)
+      await AsyncStorage.setItem("mikroAlamat", this.state.alamat)
+      await AsyncStorage.setItem("mikroProvinsi", this.state.provinsi)
+      await AsyncStorage.setItem("mikroKota", this.state.kota)
+      await AsyncStorage.setItem("mikroKecamatan", this.state.kecamatan)
+      await AsyncStorage.setItem("mikroKelurahan", this.state.kelurahan)
+      await AsyncStorage.setItem("mikroKodePos", this.state.kodePos)
+      await AsyncStorage.setItem("mikroBidang", this.state.bidang)
+      this.props.navigation.navigate('PengajuanFileMikro')
+    }
   }
 
   componentDidMount = async () => {
@@ -220,7 +238,7 @@ export default class PengajuanMikro extends Component {
                 <Label style={{ fontWeight: 'bold', color: 'black' }}>Jarak Tempat Usaha (KM)</Label>
                 <Input onChangeText={this.ubahJarak} placeholderTextColor="grey" style={{ color: "grey" }} keyboardType="numeric" value={this.state.jarak} />
               </Item>
-              
+
               <Picker
                 mode="dropdown"
                 placeholder="Jenis"
@@ -244,7 +262,7 @@ export default class PengajuanMikro extends Component {
               </Picker>
               <Item stackedLabel>
                 <Label style={{ fontWeight: 'bold', color: 'black' }}>Alamat Tempat Usaha</Label>
-                <Input onChangeText={this.ubahAlamat} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.alamat}/>
+                <Input onChangeText={this.ubahAlamat} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.alamat} />
               </Item>
               <Item stackedLabel>
                 <Label style={{ fontWeight: 'bold', color: 'black' }}>Provinsi</Label>
@@ -252,19 +270,19 @@ export default class PengajuanMikro extends Component {
               </Item>
               <Item stackedLabel>
                 <Label style={{ fontWeight: 'bold', color: 'black' }}>Kota</Label>
-                <Input onChangeText={this.ubahKota} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.kota}/>
+                <Input onChangeText={this.ubahKota} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.kota} />
               </Item>
               <Item stackedLabel>
                 <Label style={{ fontWeight: 'bold', color: 'black' }}>Kecamatan</Label>
-                <Input onChangeText={this.ubahKecamatan} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.kecamatan}/>
+                <Input onChangeText={this.ubahKecamatan} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.kecamatan} />
               </Item>
               <Item stackedLabel>
                 <Label style={{ fontWeight: 'bold', color: 'black' }}>Kelurahan</Label>
-                <Input onChangeText={this.ubahKelurahan} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.kelurahan}/>
+                <Input onChangeText={this.ubahKelurahan} placeholderTextColor="grey" style={{ color: "grey" }} value={this.state.kelurahan} />
               </Item>
               <Item stackedLabel>
                 <Label style={{ fontWeight: 'bold', color: 'black' }}>Kode Pos</Label>
-                <Input onChangeText={this.ubahKodePos} placeholderTextColor="grey" style={{ color: "grey" }} keyboardType="numeric" value={this.state.kodePos}/>
+                <Input onChangeText={this.ubahKodePos} placeholderTextColor="grey" style={{ color: "grey" }} keyboardType="numeric" value={this.state.kodePos} />
               </Item>
               <View style={{ marginTop: '5%', marginBottom: '5%' }}>
                 <Button style={{ justifyContent: 'center', alignSelf: 'center', width: '90%' }} success onPress={() => this.inputDataMikro()}>

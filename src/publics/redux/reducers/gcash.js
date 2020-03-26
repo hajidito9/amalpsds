@@ -2,6 +2,7 @@ const initialState ={
     dataGcash: [],
     dataGcashBalance: [],
     dataBayarGcash: [],
+    dataAutodebet: [],
     isLoading: false,
     isFinish: false,
     isError: false,
@@ -67,6 +68,27 @@ export default gcash = ( state = initialState, action) => {
         }
 
         case 'GET_GCASHBALANCE_REJECTED':
+        return {
+            ...state,
+            isLoading: false,
+            isError: true
+        }
+
+        case 'AUTODEBET_PENDING':
+        return {
+            ...state,
+            isLoading: true
+        }
+
+        case 'AUTODEBET_FULFILLED':
+        return {
+            ...state,
+            isLoading: false,
+            isFinish: true,
+            dataAutodebet: action.payload.data.values
+        }
+
+        case 'AUTODEBET_REJECTED':
         return {
             ...state,
             isLoading: false,

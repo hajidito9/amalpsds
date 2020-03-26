@@ -36,7 +36,8 @@ class DetailPengajuanNasabah extends Component {
             tipePekerjaan: '',
             angsuran: 0,
             marhunBih: 0,
-            pengajuan_id:''
+            pengajuan_id:'',
+            nasabah_id:''
         };
     }
     static navigationOptions = ({ navigation }) => {
@@ -57,6 +58,7 @@ class DetailPengajuanNasabah extends Component {
 
     componentDidMount = async () => {
         let asmerk = await AsyncStorage.getItem("merk")
+        let asnasabah_id = await AsyncStorage.getItem("nasabah_id")
         let astipe = await AsyncStorage.getItem("tipe")
         let asstatus = await AsyncStorage.getItem("status")
         let aswarna = await AsyncStorage.getItem("warna")
@@ -78,6 +80,7 @@ class DetailPengajuanNasabah extends Component {
         await this.setState({ tipePekerjaan: asjenis_pekerjaan })
         await this.setState({ marhunBih: asmarhunbih })
         await this.setState({ angsuran: asangsuran })
+        await this.setState({ nasabah_id: asnasabah_id })
         let aspengajuan_id = await AsyncStorage.getItem("pengajuan_id")
         await this.setState({ pengajuan_id: aspengajuan_id })    
         // let diskonAng = ((0.0056 + (0.0111* (89 - (((this.state.harga - (this.state.harga * this.state.persenDp))/this.state.harga) * 100)))).toFixed(4) * 100).toFixed(2) / 100
@@ -86,7 +89,7 @@ class DetailPengajuanNasabah extends Component {
     tolak = async () => {
         // console.warn(this.state.pengajuan_id)
         await this.props.dispatch(tolakPengajuan(this.state.pengajuan_id))
-        alert("Pengajuan dengan ID "+this.state.pengajuan_id+"\nBerhasil Ditolak")
+        alert("Pengajuan dengan ID nasabah: "+this.state.nasabah_id+"\nBerhasil Ditolak")
         this.props.navigation.navigate('HomeAdmin')
       };
 
